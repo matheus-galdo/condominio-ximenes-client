@@ -1,0 +1,112 @@
+.login-container{
+    background-image: url('../../assets/img/ximenes.png');
+
+    background-color: #B3C4E2;
+    background-position: 50% 180px;
+    background-repeat: no-repeat;
+
+
+    height: 100%;
+}
+
+.login-wrapper{
+    background-color: #0085c8cb;
+    display: flex;
+    flex-direction: column;
+    padding: 0px 35%;
+    height: 100%;
+
+
+    .logo{
+        height: 50%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    p,h1{
+        text-align: center;
+        color: #fff;
+    }
+}
+
+.login-form{
+
+    display: flex;
+    flex-direction: column;
+
+    .form-group{    
+        display: flex;
+        flex-direction: column;
+
+
+        margin-bottom: 1rem;
+
+
+        .input-group{
+            display: flex;
+
+            .input-icon{
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #fff;
+        
+                padding-left: 1.4rem;
+                padding-right: 1.8rem;
+        
+                svg{
+                    height: 0.8rem;
+                    width: 0.8rem;
+                    fill: #757575;
+                }
+            }
+
+
+            .input-icon{ border-radius: 2rem 0px 0px 2rem; }
+            input{ border-radius: 0px 2rem 2rem 0px;  flex-grow: 1;}
+        }
+
+
+        input, button{
+            font-size: 1rem;
+            border: 0;
+            height: 2.4rem;
+            border-radius: 2rem;
+            outline: unset;
+        }
+    
+        input{
+            background-color: #fff;
+        }
+
+    }
+
+    
+
+
+    
+
+    button{
+        background-color: var(--color-primary);
+        box-shadow: 0px 1px 15px 1px #20202056;
+        color: #fff;
+        transition: background 0.2s;
+    }
+
+    button:hover{
+        background-color: var(--color-primary-hover);
+    }
+
+    
+}
+
+.register{
+    font-size: 0.8rem;
+}
+
+
+@media screen and(max-width: 600px){
+    .login-wrapper{
+        padding: 0px 15%;
+    }
+}
