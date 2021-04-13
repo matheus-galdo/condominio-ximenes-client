@@ -8,52 +8,42 @@ import {
 import AuthProvider, { AuthContext } from "./Context/AuthProvider";
 
 import './assets/scss/style.scss'
-import routes from './routes'
+import { publicRoutes } from './routes'
+import Container from "./AppContainer/Container";
 
 function App() {
 
-  const {auth} = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
 
   useEffect(() => {
 
   }, [auth])
 
-
   return (
     <AuthProvider>
       <Router>
+
+        {/* <Route exact path="/login" name="Login Page" render={props => <Login {...props}/>} />
+      <Route exact path="/register" name="Register Page" render={props => <Register {...props}/>} />
+      <Route exact path="/404" name="Page 404" render={props => <Page404 {...props}/>} />
+      <Route exact path="/500" name="Page 500" render={props => <Page500 {...props}/>} />
+      <Route path="/" name="Home" render={props => <TheLayout {...props}/>} /> */}
+
+
         <Suspense fallback={<div>Loading...</div>}>
           <Switch>
-            <AuthContext.Consumer>
-              {ctx => {
-                console.log(ctx);
-                console.log('logado: ' + ctx.auth.isAuthenticated);
-                let mapedRoutes = routes.map((route, i) => {
-                  return <Route
-                    render={({ location }) => {
 
-                      if(route.publicRoute || (!route.publicRoute && ctx.auth.isAuthenticated)){
-                        return <route.component/>
-                      }else{
-                        return <Redirect to='/nao-autorizado'/>
-                      }
-                    }}
-                    
-                    key={i} path={route.path}
-                    exact={route.exact} />
-                })
+            {publicRoutes.map((route, i) =>
+              <Route
+                component={route.component}
+                key={i}
+                path={route.path}
+                exact={route.exact} />
+            )}
 
-                console.log(mapedRoutes);
-                // console.log(window.location.pathname);
-                // // console.log(location);
+            <Route path="/" component={Container} />
 
-                return (
-                  <>
-                    {mapedRoutes}
-                  </>
-                )
-              }}
-            </AuthContext.Consumer>
+
           </Switch>
         </Suspense>
       </Router>

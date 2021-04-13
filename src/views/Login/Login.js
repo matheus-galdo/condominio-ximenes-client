@@ -3,7 +3,7 @@ import api from "../../api";
 import './login.scss';
 import * as IconsFa from "react-icons/fa";
 import { Link, Redirect, useHistory } from "react-router-dom";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../Context/AuthProvider";
 import storage from "../../libs/storage";
 
@@ -16,6 +16,10 @@ export default function Teste(props) {
 
     const history = useHistory();
     const { auth, setAuth } = useContext(AuthContext)
+
+    useEffect(() => {
+        document.title = "Login"
+    }, []);
 
     function login(event) {
         event.preventDefault()
