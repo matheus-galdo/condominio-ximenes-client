@@ -1,0 +1,33 @@
+.content-wrapper.dashboard{
+    margin-top: 0;
+}
+
+.top-container{
+    flex-shrink: 0;
+    height: 300px;
+    background-color: var(--color-primary);
+    padding: 0 2rem;
+
+    display: flex;
+    align-items: center;
+    color: #fff;
+}
+
+.dashboard-wrapper{
+    flex-grow: 1;
+    background-color: #F1F5F8;
+    padding: 0 1rem;
+
+    display: flex;
+    flex-direction: column;
+}
+
+
+
+.dashboard-content-area{
+    flex-grow: 1;
+    margin-top: -80px;
+    border-radius: 1.5rem 1.5rem 0 0;
+    background-color: #fff;
+    padding: 1rem 2rem;
+}

@@ -1,11 +1,12 @@
-import api from "../../api";
-
-import './login.scss';
-import * as IconsFa from "react-icons/fa";
-import { Link, Redirect, useHistory } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "../../Context/AuthProvider";
-import storage from "../../libs/storage";
+import { Link, Redirect, useHistory } from "react-router-dom";
+import * as IconsFa from "react-icons/fa";
+
+import { AuthContext } from "../../../Context/AuthProvider";
+import storage from "../../../libs/storage";
+import api from "../../../api";
+import './login.scss';
+
 
 
 export default function Teste(props) {

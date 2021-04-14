@@ -1,0 +1,309 @@
+.menu-item {
+    a {
+        text-decoration: none;
+        color: #090909;
+        transition: 0.15s ease-in-out;
+        font-size: 0.95rem;
+
+        display: flex;
+        align-items: center;
+
+
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.desktop-menu{
+    scrollbar-width: thin;
+
+    &::-webkit-scrollbar{
+        width: 5px;
+        height: 98px;
+    }
+
+    &::-webkit-scrollbar-button{
+        display: none;
+    }
+
+    &::-webkit-scrollbar-thumb{
+        background-color: #CDCDCD;
+    }
+
+    &::-webkit-scrollbar-track{
+        background-color: #F0F0F0; /* or add it to the track */
+        
+    }
+
+    &:hover{
+        &::-webkit-scrollbar-thumb{
+            background-color: #b1acac;
+        }    
+    }
+}
+
+
+.desktop-menu {
+    background-color: #fafafc;
+    border-right: 0.5px solid #ececee;
+    height: 100%;
+    width: 25%;
+    max-width: 300px;
+    padding: 3rem 1.5rem 0 0.8rem;
+    overflow-y: scroll;
+
+
+    .menu-close-button{
+        display: none;
+    }
+
+    .user-resume {
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: space-around;
+        margin-bottom: 2rem;
+
+        .user-icon {
+            svg {
+                fill: #fff;
+                height: 8rem;
+                width: 8rem;
+            }
+
+            margin-bottom: 1rem;
+
+        }
+
+        .user-name {
+            color: #fff;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            font-weight: 500;
+
+        }
+
+        .menu-user-btns {
+            width: 100%;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            span { border-right: 1px solid #b6b6b6; }
+
+            span,
+            a {
+                cursor: pointer;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                text-decoration: none;
+                width: 50%;
+                color: #fff;
+
+                svg {
+                    margin-right: 0.5rem;
+                }
+            }
+
+            span:hover,
+            a:hover{
+                color: var(--color-primary-dark);
+            }
+
+        }
+    }
+
+    .menu-item {
+        height: 2.6rem;
+        margin-bottom: 0.4rem;
+        border-radius: 0.5rem;
+        
+        display: flex;
+        align-items: center;
+        transition: 0.15s ease-in-out;
+
+        a {
+            display: flex;
+            align-items: center;
+
+            svg{
+                height: 1.2rem;
+                width: 1.2rem;
+                margin-right: 0.5rem;
+            }
+            color: var(--text-dark-primary);
+            padding-left: 1rem;
+        }
+    }
+
+    .menu-item:hover {
+        background-color: var(--color-primary);
+
+        a {
+            color: #fff;
+        }
+    }
+}
+
+
+.desktop-menu.dashboard-menu {
+    background-color: #fff;
+}
+
+
+
+@media screen and(max-width: 640px) {
+
+    .desktop-menu.hide-menu{
+        display: none;
+    }
+
+    .desktop-menu,
+    .desktop-menu.dashboard-menu {
+        position: absolute;
+        z-index: 3;
+        width: 100%;
+        max-width: 100%;
+
+        margin-top: 0;
+        padding: 0 2rem;
+        height: auto;
+        
+
+        background-color: var(--color-primary);
+
+        .menu-close-button{
+            display: block;
+        }
+
+        .user-resume{
+            display: flex;
+        }
+        
+        ul {
+            display: flex;
+            flex-direction: row;
+            flex-basis: 15rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+
+        .menu-item {
+
+            height: 8rem;
+            justify-content: center;
+            padding: 0;
+
+            width: 49%;
+            margin-bottom: 0.5rem;
+            background-color: #65BBE8;
+
+            a {
+                color: #fff;
+                flex-direction: column;
+                padding-left: 0;
+                justify-content: center;
+                text-align: center;
+
+                svg {
+                    margin: 0;
+                    margin-bottom: 1rem;
+                    fill: #fff;
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+            }
+        }
+
+
+        .menu-item:hover {
+            background-color: #44ade6;
+
+            a {
+                color: #fff;
+            }
+        }
+    }
+}
+
+
+// @media screen and(max-width: 920px) {
+//     .desktop-menu,
+//     .desktop-menu.dashboard-menu {
+//     }
+// }
+
+@media screen and(min-width: 640px) and(max-width: 920px) {
+    .desktop-menu.hide-menu{
+        display: none;
+    }
+    .desktop-menu,
+    .desktop-menu.dashboard-menu {
+        position: absolute;
+        z-index: 3;
+        width: 100%;
+        max-width: 100%;
+        margin-top: 0;
+        padding: 0 15%;
+        height: auto;
+
+
+        background-color: var(--color-primary);
+
+        .menu-close-button{
+            display: block;
+        }
+
+        .user-resume{
+            display: flex;
+        }
+        
+        ul {
+            display: flex;
+            flex-direction: row;
+            flex-basis: 15rem;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+
+
+        .menu-item {
+
+            height: 8rem;
+            justify-content: center;
+            padding: 0;
+
+            width: 49%;
+            margin-bottom: 0.5rem;
+            background-color: #65BBE8;
+
+            a {
+                color: #fff;
+                flex-direction: column;
+                padding-left: 0;
+                justify-content: center;
+                text-align: center;
+
+                svg {
+                    margin: 0;
+                    margin-bottom: 1rem;
+                    fill: #fff;
+                    width: 2.5rem;
+                    height: 2.5rem;
+                }
+            }
+        }
+
+
+        .menu-item:hover {
+            background-color: #44ade6;
+
+            a {
+                color: #fff;
+            }
+        }
+    }
+}

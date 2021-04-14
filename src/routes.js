@@ -1,18 +1,17 @@
 import React from 'react';
 
-const home = React.lazy(() => import('./views/Home'));
-const NotFound = React.lazy(() => import('./views/NotFound/NotFound'));
+const NotFound = React.lazy(() => import('./views/public/NotFound/NotFound'));
+const home = React.lazy(() => import('./views/public/Home'));
+const Unauthorized = React.lazy(() => import('./views/public/Unauthorized/Unauthorized'));
+const login = React.lazy(() => import('./views/public/Login/Login'));
 
-const Unauthorized = React.lazy(() => import('./views/Unauthorized/Unauthorized'));
-const login = React.lazy(() => import('./views/Login/Login'));
 
-
-const teste = React.lazy(() => import('./views/teste'));
 const dashboard = React.lazy(() => import('./views/Dashboard/Dashboard'));
+const account = React.lazy(() => import('./views/Account/Account'));
 
 export const routes = [
-    {path: '/teste', exact: true, component: teste},
     {path: '/dashboard', exact: true, component: dashboard},
+    {path: '/minha-conta', exact: true, component: account},
 
 ]
 

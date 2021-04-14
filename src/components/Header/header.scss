@@ -1,6 +1,137 @@
-.app-header{
-    height: 4rem;
-
+.app-header {
+    height: 3rem;
     background-color: var(--color-primary);
-    color: #fff;
+    position: absolute;
+    width: 100%;
+}
+
+.header-wrapper {
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.transparent-header {
+    background-color: transparent;
+}
+
+.header-btn {
+    cursor: pointer;
+    background-color: transparent;
+    border: 0;
+    border-radius: 3rem;
+    width: 2.2rem;
+    height: 2.2rem;
+    outline: unset;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    transition: .2s;
+
+    svg {
+        width: 1.6rem;
+        height: 1.6rem;
+        fill: #fff;
+    }
+}
+
+.header-btn:hover {
+    background-color: var(--color-primary-hover);
+
+    svg {
+        fill: #ffffffe1;
+    }
+}
+
+.header-btn:active {
+    background-color: var(--color-primary-dark);
+
+    svg {
+        fill: #ffffff;
+    }
+}
+
+.account-menu::before {
+    content: '';
+    border: 6px solid transparent;
+    border-bottom-color: #ffffff;
+    position: absolute;
+    right: 12px;
+    top: -12px;
+    z-index: 1;
+}
+
+.account-menu {
+    position: absolute;
+    top: calc(2rem + 12px);
+    right: .43rem;
+    width: 160px;
+    height: 80px;
+    padding: 0 15px;
+    background-color: #fff;
+    border: 1px solid #00000018;
+    border-radius: 0.6rem;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+    color: #000;
+
+    a,
+    a:visited {
+        height: 50%;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-bottom: 1px solid rgb(206, 206, 206);
+        font-size: .9rem;
+
+        text-decoration: none;
+        color: #000;
+        transition: color .2s;
+    }
+
+
+    button {
+        border: 0;
+        height: 50%;
+        width: 100%;
+        background-color: transparent;
+        outline: unset;
+        cursor: pointer;
+        transition: color .2s;
+        font-size: .9rem;
+
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            margin-right: 0.5rem;
+        }
+    }
+
+    button:hover,
+    a:hover {
+        color: #797979;
+    }
+
+}
+
+@media screen and(min-width: 921px) {
+    .header-wrapper {
+        justify-content: flex-end;
+    }
+
+    .menu-btn {
+        display: none;
+    }
 }

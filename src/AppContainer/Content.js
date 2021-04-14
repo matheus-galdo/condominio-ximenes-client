@@ -1,6 +1,5 @@
-import React, { Suspense, useEffect, useContext } from "react";
+import React, { useEffect, useContext } from "react";
 import {
-    BrowserRouter as Router,
     Switch,
     Route,
     Redirect,
@@ -41,17 +40,10 @@ export default function Content(props) {
 
     return (
         <>
-            Content
-
-            {console.log(mapedRoutes)}
-            {/* // console.log(window.location.pathname); */}
-            {/* // // console.log(location); */}
             <Switch>
-
                 {mapedRoutes}
                 <Route path="*" ><Redirect to='/404' /></Route>
             </Switch>
-
         </>
     )
                 
