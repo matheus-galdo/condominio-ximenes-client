@@ -44,8 +44,8 @@ export default function Menu(props) {
 
                 <p className='user-name'>Michelle</p>
                 <div className='menu-user-btns'>
-                    <span onClick={() => console.log('saindo')}><BiLogOutCircle/> Sair</span>
                     <Link to='/minha-conta'>Minha conta</Link>
+                    <span onClick={() => console.log('saindo')}><BiLogOutCircle/> Sair</span>
                 </div>
                 
             </div>

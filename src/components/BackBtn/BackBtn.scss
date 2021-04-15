@@ -1,0 +1,14 @@
+.navigation-back-btn{
+    display: flex;
+    flex-direction: row;
+    color: var(--text-dark-medium);
+    cursor: pointer;
+
+    svg{
+        margin-right: 0.6rem;
+    }
+
+    &:hover{
+        color: var(--text-dark-secondary);
+    }
+}
