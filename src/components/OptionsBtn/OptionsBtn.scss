@@ -1,0 +1,76 @@
+.options-btn-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: visible;
+    width: 2rem;
+
+    position: relative;
+
+    
+
+    .options{
+        border: 0;
+        background-color: transparent;
+        outline: transparent;
+        cursor: pointer;
+        padding: 0;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+
+        svg{
+            height: 1.4rem;
+            width: 1.4rem;
+            transition: 0.15s; 
+        }
+
+        &:hover svg{
+            stroke: #747474;
+        }
+    }
+
+
+    .options-list{
+        position: absolute;
+        top: 2rem;
+        right: 0;
+        min-width: 100px;
+        max-width: 250px;
+        z-index: 5;
+
+        background-color: #fff;
+        border: 1px solid #00000018;
+        border-radius: 0.6rem;
+        color: var(--text-dark-secondary);
+        font-size: 0.95rem;
+
+        &.hide{
+            display: none;
+        }
+
+        li{
+            padding: 0.5rem 1rem;
+            cursor: pointer;
+
+            transition: 0.15s; 
+
+            
+            &:hover{
+                background-color: rgb(240, 240, 240);
+            }
+
+            &:last-child:hover{
+                background-color: rgb(240, 240, 240);
+                border-radius: 0 0 0.6rem 0.6rem;
+            }
+
+            &:first-child:hover{
+                background-color: rgb(240, 240, 240);
+                border-radius: 0.6rem 0.6rem 0 0 ;
+            }
+        }
+    }
+}

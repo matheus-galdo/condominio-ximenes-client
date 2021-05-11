@@ -4,7 +4,10 @@ $fontHoverColor: var(--text-dark-secondary)) {
     background-color: $bgColor;
     color: $fontColor;
     text-decoration: none;
-    
+    border: 0;
+    cursor: pointer;
+    box-shadow: 0px 3px 5px 0px rgba(22, 22, 22, 0.144);
+
     border-radius: 3rem;
     height: 2rem;
     padding: 0 2rem;
@@ -13,16 +16,26 @@ $fontHoverColor: var(--text-dark-secondary)) {
     display: flex;
     align-items: center;
     justify-content: center;
+    white-space: nowrap;
 
     transition: all 200ms ease;
     transition-property: background, color;
+    
 
     &:hover, &:active{
         background-color: $bgHoverColor;
         color: $fontHoverColor;
+    }
 
+    @media screen and(max-width:640px) {
+        &{
+            padding: 0 1rem;
+            font-size: 0.9rem;
+        }
     }
 }
+
+
 
 .btn{
     @include btn-base;
@@ -35,4 +48,60 @@ $fontHoverColor: var(--text-dark-secondary)) {
 
 .btn-secondary{
     @include btn-base(var(--color-secondary), var(--color-secondary-hover), #fff, #e9e9e9);
+}
+.btn-delete{
+    @include btn-base(var(--color-delete), var(--color-delete-hover), #fff, #e9e9e9);
+}
+
+.small-btn{
+    height: 1.8rem;
+    padding: 0 1.4rem;
+    font-size: 0.9rem;
+}
+
+@mixin square-span {
+    span{
+        background-color: var(--color-primary);
+        color: #fff;
+        box-shadow: 0px 3px 5px 0px rgba(22, 22, 22, 0.144);
+
+        border-radius: 0.2rem;
+        height: 2.5rem;
+        width: 2.5rem;
+        margin-right: 0.6rem;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        transition: all 200ms ease;
+        transition-property: background, color;
+    }
+}
+
+.square-btn{
+    background: none;
+    border: 0;
+    outline: none;
+    padding: 0;
+    
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+
+    color: var(--text-dark-secondary);
+    font-size: 0.95rem;
+
+    
+    @include square-span;
+    
+    
+
+    &:hover, &:active{
+        span{
+            background-color: var(--color-primary-hover);
+        }
+    }
 }

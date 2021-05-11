@@ -4,19 +4,22 @@ import * as IconsFa from "react-icons/fa";
 
 import { AuthContext } from "../../../Context/AuthProvider";
 import storage from "../../../libs/storage";
-import api from "../../../api";
+import api from "../../../Service/api";
 import './login.scss';
+import { UserContext } from "../../../Context/UserProvider";
 
 
 
 export default function Teste(props) {
 
-    const [user, setUser] = useState(null)
+    const [user, setUserState] = useState(null)
     const [password, setpassword] = useState(null)
     const [errorMsg, setErrorMsg] = useState(null)
 
     const history = useHistory();
     const { auth, setAuth } = useContext(AuthContext)
+    const { setUser } = useContext(UserContext)
+
 
     useEffect(() => {
         document.title = "Login"
@@ -32,11 +35,12 @@ export default function Teste(props) {
 
         let data = { email: user, password: password }
 
-        api.post('/login', data).then(response => {
+        api(true).post('/login', data).then(response => {
 
-            setAuth({ isAuthenticated: true, token: response.data.token })
             storage.setItem('token', response.data.token)
             storage.setItem('user', response.data.user)
+            setAuth({ isAuthenticated: true, token: response.data.token })
+            setUser(response.data.user)
             history.push('/dashboard')
 
         }).catch(error => {
@@ -48,7 +52,9 @@ export default function Teste(props) {
     return (
         <>
             {auth.isAuthenticated ?
-                <Redirect to='/dashboard' /> :
+                <>
+                    <Redirect to='/dashboard' />
+                </> :
 
                 <div className='login-container'>
                     <div className='login-wrapper'>
@@ -63,7 +69,7 @@ export default function Teste(props) {
                             <div className='form-group'>
                                 <div className='input-group'>
                                     <span className="input-icon"><IconsFa.FaUserAlt /></span>
-                                    <input placeholder='Usuário' type="text" onChange={event => setUser(event.target.value)} />
+                                    <input placeholder='Usuário' type="text" onChange={event => setUserState(event.target.value)} />
                                 </div>
                             </div>
 

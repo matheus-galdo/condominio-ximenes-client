@@ -4,24 +4,25 @@ import {BiLogOutCircle} from 'react-icons/bi';
 import { AuthContext } from "../../Context/AuthProvider";
 import useOuterClick from "../../Hooks/useOuterClick";
 import storage from "../../libs/storage";
+import { UserContext } from "../../Context/UserProvider";
 
 export default function AccountMenu(props) {
 
     const [show, setShow] = useState(false);
     const { setAuth } = useContext(AuthContext)
+    const { setUser } = useContext(UserContext)
     const history = useHistory();
 
     const innerRef = useOuterClick(ev => props.closeMenu());
 
     useEffect(()=>{
         setShow(props.show)
-
-
     }, [props])
 
 
     function logout() {
         setAuth({ isAuthenticated: false, token: null })
+        setUser({})
         storage.removeItem('token')
         storage.removeItem('user')
         history.push('/login')

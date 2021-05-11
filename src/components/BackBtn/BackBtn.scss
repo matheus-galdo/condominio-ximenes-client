@@ -1,11 +1,12 @@
 .navigation-back-btn{
     display: flex;
     flex-direction: row;
+    align-items: center;
     color: var(--text-dark-medium);
     cursor: pointer;
 
     svg{
-        margin-right: 0.6rem;
+        margin-right: 0.4rem;
     }
 
     &:hover{

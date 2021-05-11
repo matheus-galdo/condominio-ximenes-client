@@ -1,0 +1,37 @@
+.details-list-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.4rem;
+
+    
+
+    .details-item-content {
+        display: flex;
+        align-items: center;
+
+
+        .details-item-number {
+            background-color: var(--color-primary);
+            color: #fff;
+            box-shadow: 0px 3px 5px 0px rgba(22, 22, 22, 0.144);
+    
+            border-radius: 0.2rem;
+            height: 2.5rem;
+            width: 2.5rem;
+            margin-right: 0.6rem;
+    
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: 0.2s;
+        }
+
+        p {
+            line-height: 1.2rem;
+            span {
+                color: var(--text-dark-secondary);
+                font-size: 0.95rem;
+            }
+        }
+    }
+}

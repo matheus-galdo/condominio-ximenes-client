@@ -1,0 +1,49 @@
+.list-item-container {
+
+
+    .list-item-card {
+
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1rem;
+        border-radius: 0.5rem;
+
+
+        &:hover {
+            background-color: #f3f3f3;
+        }
+
+        &-content {
+
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            a {
+                text-decoration: none;
+                width: 100%;
+                height: 100%;
+                color: var(--text-dark-primary);
+
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+
+
+
+                h1 {
+                    font-size: 1rem;
+                    font-weight: 500;
+                }
+
+                p {
+                    margin-top: 0.2rem;
+                    font-size: 0.95rem;
+                    color: var(--text-dark-secondary);
+                }
+            }
+        }
+    }
+}

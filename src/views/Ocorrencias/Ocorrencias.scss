@@ -1,0 +1,54 @@
+.locatario-card{
+
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    padding: 1rem;
+    border-radius: 0.5rem;
+
+
+    &:hover{
+        background-color: #f3f3f3;
+    }
+
+    &-content{
+
+        flex-grow: 1;
+
+        a{
+            text-decoration: none;
+            width: 100%;
+            height: 100%;
+            color: var(--text-dark-primary);
+
+            
+
+            h1{
+                font-size: 1rem;
+                font-weight: 400;
+            }
+
+            p{
+                margin-top: 0.2rem;
+                font-size: 0.95rem;
+                color: var(--text-dark-secondary);
+            }
+        }
+
+        
+
+        
+    }
+}
+
+
+.locatario-wrapper{
+
+    padding: 1rem 5%;
+
+    >h1{
+        text-align: center;
+        font-size: 1.4rem;
+        margin-bottom: 1rem;
+    }
+}

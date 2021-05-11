@@ -2,19 +2,42 @@
 
     .main{
         background-color: var(--color-primary);
-        padding: 1rem 5%;
+        padding: 0 5%;
+        height: 260px;
         
-        div{
-            background-color: var(--color-primary-dark);
+        .user-card{
+            background-color: #0a8ae0;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            color: #fff;
 
-            svg{
-                height: 150px;
-                width: 150px;
+            
+            margin: 0 auto;
+            max-width: 500px;
+            height: 280px;
+            padding: 1rem .5rem;
+
+
+
+            .user-card-content{
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                color: #fff;
+            }
+
+
+            border-radius: 1rem;
+            box-shadow: 0px 4px 6px 0px rgba(32, 32, 32, 0.26);
+
+
+
+            .navigation-back-btn{
+                color: #fff;
+            }
+
+            svg.user-icon{
+                height: 120px;
+                width: 120px;
                 fill: #fff;
             }
 
@@ -29,5 +52,61 @@
                 font-weight: 400;
             }
         }
+    }
+
+    .account-links{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+
+        .details{
+            margin-top: 4rem;
+            margin-bottom: 4rem;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            
+            p{
+                margin-bottom: 0.5rem;
+            }
+            .contatos{
+                color: var(--text-dark-secondary);
+            }
+        }
+
+
+        .links{
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            flex-grow: 1;
+            width: 100%;
+            padding-bottom: 5rem;
+
+            .link-btn{
+                display: flex;
+                flex-direction: row;
+                align-items: center;
+                padding-left: 2rem;
+                max-width: 450px;
+                width: 80%;
+
+                height: 3rem;
+                margin-bottom: 1rem;
+                color: var(--text-dark-primary);
+                background-color: #EAF4F9;
+                text-decoration: none;
+                border-radius: 2rem;
+                
+                
+                svg{
+                    margin-right: 1rem;
+                }
+            }
+        }
+        
+
     }
 }

@@ -5,10 +5,13 @@ import {
   Route,
 } from "react-router-dom";
 import AuthProvider, { AuthContext } from "./Context/AuthProvider";
+import UserProvider, { UserContext } from "./Context/UserProvider";
+// import 'bootstrap/dist/css/bootstrap.min.css';
 
 import './assets/scss/style.scss'
 import { publicRoutes } from './routes'
 import Container from "./AppContainer/Container";
+import momentConfig from './assets/moment-config'
 
 function App() {
 
@@ -20,6 +23,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <UserProvider>
         <Router>
           <Suspense fallback={<div>Loading...</div>}>
             <Switch>
@@ -36,6 +40,7 @@ function App() {
             </Switch>
           </Suspense>
         </Router>
+        </UserProvider>
     </AuthProvider>
   );
 }

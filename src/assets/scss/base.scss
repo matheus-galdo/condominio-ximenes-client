@@ -8,21 +8,31 @@
 }
 
 :root{
-    --color-primary: #0099E8;
+    --color-primary: #06a0ec;
     --color-primary-hover: #038cd1;
     --color-primary-dark: #007dbb;
 
-    --color-secondary: #C7C7C7;
-    --color-secondary-hover: #a5a5a5;
+    --color-secondary: #adadad;
+    --color-secondary-hover: #919191;
+
+    --color-delete: #d23f3f;
+    --color-delete-hover: #a9362d;
 
 
     --text-dark-primary: #252c33;
     --text-dark-secondary: #474a4c;
+    --text-dark: #6D6D6D;
     --text-dark-medium: #6e7174;
+
     --text-dark-terciary: #BCBCBC;
 
     
 
     font-size: 16px;
     font-family: 'Roboto', 'Segoe UI', sans-serif;
+}
+
+
+@media screen and(min-width: 1920px){
+    :root{font-size: 24px;}
 }

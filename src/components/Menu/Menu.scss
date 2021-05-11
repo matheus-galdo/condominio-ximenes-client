@@ -49,7 +49,7 @@
     width: 25%;
     max-width: 300px;
     padding: 3rem 1.5rem 0 0.8rem;
-    overflow-y: scroll;
+    overflow-y: auto;
 
 
     .menu-close-button{
@@ -168,7 +168,7 @@
 
         margin-top: 0;
         padding: 0 2rem;
-        height: auto;
+        height: 100vh;
         
 
         background-color: var(--color-primary);
