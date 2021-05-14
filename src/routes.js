@@ -3,6 +3,7 @@ import React from 'react';
 const NotFound = React.lazy(() => import('./views/public/NotFound/NotFound'));
 const home = React.lazy(() => import('./views/public/Home'));
 const Unauthorized = React.lazy(() => import('./views/public/Unauthorized/Unauthorized'));
+const NotAllowed = React.lazy(() => import('./views/public/NotAllowed/NotAllowed'));
 const login = React.lazy(() => import('./views/public/Login/Login'));
 
 
@@ -27,7 +28,9 @@ const FaleComPortaria = React.lazy(() => import('./views/Ocorrencias/Ocorrencias
 const FaleComPortaria_Chat = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
 
 const Documentos = React.lazy(() => import('./views/Documentos/Documentos'));
-const Documentos_Cadastro = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
+const Documentos_Cadastro = React.lazy(() => import('./views/Documentos/Cadastro/Cadastro'));
+const Documentos_Detalhes = React.lazy(() => import('./views/Documentos/Detalhes/Detalhes'));
+
 
 const Contas = React.lazy(() => import('./views/Contas/Contas'));
 const Contas_Cadastro = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
@@ -37,10 +40,16 @@ const Boletos = React.lazy(() => import('./views/Boletos/Boletos'));
 const Boletos_Cadastro = React.lazy(() => import('./views/Boletos/Boletos'));
 
 const Proprietarios = React.lazy(() => import('./views/Proprietarios/Proprietarios'));
+const Proprietarios_Cadastro = React.lazy(() => import('./views/Proprietarios/Cadastro/Cadastro'));
+const Proprietarios_Detalhes = React.lazy(() => import('./views/Proprietarios/Detalhes/Detalhes'));
 
 const Apartamentos = React.lazy(() => import('./views/Apartamentos/Apartamentos'));
+const Apartamentos_Cadastro = React.lazy(() => import('./views/Apartamentos/Cadastro/Cadastro'));
+const Apartamentos_Detalhes = React.lazy(() => import('./views/Apartamentos/Detalhes/Detalhes'));
 
-const Usuarios = React.lazy(() => import('./views/Proprietarios/Proprietarios'));
+const Usuarios = React.lazy(() => import('./views/Usuarios/Usuarios'));
+const Usuarios_Cadastro = React.lazy(() => import('./views/Usuarios/Cadastro/Cadastro'));
+const Usuarios_Detalhes = React.lazy(() => import('./views/Usuarios/Detalhes/Detalhes'));
 
 const Permissoes = React.lazy(() => import('./views/Permissoes/Permissoes'));
 const Permissoes_Cadastro = React.lazy(() => import('./views/Permissoes/Cadastro/Cadastro'));
@@ -85,7 +94,10 @@ export const routes = [
 
 
     {path: '/documentos/cadastro', exact: true, component: Documentos_Cadastro},
+    {path: '/documentos/cadastro/:id', exact: true, component: Documentos_Cadastro},
     {path: '/documentos', exact: true, component: Documentos},
+    {path: '/documentos/:id', exact: true, component: Documentos_Detalhes},
+
 
 
     {path: '/contas/cadastro', exact: true, component: Contas_Cadastro},
@@ -96,22 +108,22 @@ export const routes = [
     {path: '/boletos', exact: true, component: Boletos},
 
     
-    {path: '/proprietarios/cadastro', exact: true, component: Avisos_Cadastro},
-    {path: '/proprietarios/cadastro/:id', exact: true, component: Avisos_Cadastro},
+    {path: '/proprietarios/cadastro', exact: true, component: Proprietarios_Cadastro},
+    {path: '/proprietarios/cadastro/:id', exact: true, component: Proprietarios_Cadastro},
     {path: '/proprietarios', exact: true, component: Proprietarios},
-    {path: '/proprietarios/:id', exact: true, component: Avisos_Detalhes},
-
-
-    {path: '/apartamentos/cadastro', exact: true, component: Avisos_Cadastro},
-    {path: '/apartamentos/cadastro/:id', exact: true, component: Avisos_Cadastro},
+    {path: '/proprietarios/:id', exact: true, component: Proprietarios_Detalhes},
+    
+    
+    {path: '/apartamentos/cadastro', exact: true, component: Apartamentos_Cadastro},
+    {path: '/apartamentos/cadastro/:id', exact: true, component: Apartamentos_Cadastro},
     {path: '/apartamentos', exact: true, component: Apartamentos},
-    {path: '/apartamentos/:id', exact: true, component: Avisos_Detalhes},
+    {path: '/apartamentos/:id', exact: true, component: Apartamentos_Detalhes},
 
 
-    {path: '/usuarios/cadastro', exact: true, component: Avisos_Cadastro},
-    {path: '/usuarios/cadastro/:id', exact: true, component: Avisos_Cadastro},
+    {path: '/usuarios/cadastro', exact: true, component: Usuarios_Cadastro},
+    {path: '/usuarios/cadastro/:id', exact: true, component: Usuarios_Cadastro},
     {path: '/usuarios', exact: true, component: Usuarios},
-    {path: '/usuarios/:id', exact: true, component: Avisos_Detalhes},
+    {path: '/usuarios/:id', exact: true, component: Usuarios_Detalhes},
 
 
     {path: '/permissoes/cadastro', exact: true, component: Permissoes_Cadastro},
@@ -135,6 +147,7 @@ export const routes = [
 export const publicRoutes = [
     {path: '/login', exact: true, component: login},
     {path: '/nao-autorizado', exact: true, component: Unauthorized},
+    {path: '/nao-permitido', exact: true, component: NotAllowed},
     {path: '/404', exact: true, component: NotFound},
     {path: '/', exact: true, component: home},
 ];

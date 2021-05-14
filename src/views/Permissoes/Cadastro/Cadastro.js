@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { Redirect, useHistory, useParams } from 'react-router';
 import { FiCheckCircle } from "react-icons/fi";
 
 import BackBtn from '../../../components/BackBtn/BackBtn';
-import FormInput from '../../../libs/FormInput';
+import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
 import './Cadastro.scss';
+import usePermissao from '../../../Hooks/usePermissao';
 
 export default function Cadastro(props) {
 
@@ -18,6 +19,7 @@ export default function Cadastro(props) {
 
     const history = useHistory();
     let { id } = useParams();
+    const { permissao } = usePermissao('permissoes')
    
 
 
@@ -88,9 +90,6 @@ export default function Cadastro(props) {
             formData[fieldName] = fields[fieldName].value
         })
 
-        console.log(valid, formData, fields);
-        console.log(permissaoItens);
-
         if (valid) {
             setStepTrigered(0)
 
@@ -103,6 +102,10 @@ export default function Cadastro(props) {
     }
 
     return <div className='form-wrapper'>
+
+        {permissao.modulo && (!permissao.acessar || !permissao.criar) && <Redirect to='/nao-permitido' />}
+        {permissao.modulo && id && (!permissao.acessar || !permissao.editar) && <Redirect to='/nao-permitido' />}
+
         <BackBtn to='/permissoes' />
         <h1>Cadastrar nível de permissão</h1>
         <p>Crie um novo tipo de usuário e informe quais módulos do sistema ele poderá acessar</p>

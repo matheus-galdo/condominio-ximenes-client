@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useHistory } from 'react-router';
-import FormInput from '../../../libs/FormInput';
+import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
 import './Cadastro.scss';
 

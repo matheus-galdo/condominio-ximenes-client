@@ -19,7 +19,6 @@ export default function Detalhes(props) {
 
     useEffect(() => {
         if (!hasLoaded && !permissaoItens.permissoes_with_modulo) {
-            console.log('passei', permissaoItens, hasLoaded, id);
             api().get(`permissoes/${id}`).then(response => {
                 setPermissaoItens(response.data)
                 setHasLoaded(true)
@@ -50,7 +49,7 @@ export default function Detalhes(props) {
     function submit(e) {
         e.preventDefault()
 
-        let formData = { 
+        let formData = {
             nome: permissaoItens.nome,
             isAdmin: permissaoItens.is_admin,
             permissoes: permissaoItens.permissoes_with_modulo
@@ -61,7 +60,8 @@ export default function Detalhes(props) {
 
 
     return <div className='details-wrapper'>
-        {permissao.modulo && !permissao.acessar && <Redirect to='/dashboard' />}
+        {permissao.modulo && (!permissao.acessar || !permissao.visualizar) && <Redirect to='/dashboard' />}
+
         <BackBtn />
 
         {hasLoaded && <>
@@ -112,10 +112,12 @@ export default function Detalhes(props) {
                     </div>
                 </div>)}
 
-                <div className='form-controls'>
-                    <button className='btn-secondary' onClick={() => history.push('/permissoes')}>Cancelar</button>
-                    <button className='btn-primary' onClick={submit}>Salvar</button>
-                </div>
+                {permissao.modulo && permissao.editar &&
+                    <div className='form-controls'>
+                        <button className='btn-secondary' onClick={() => history.push('/permissoes')}>Cancelar</button>
+                        <button className='btn-primary' onClick={submit}>Salvar</button>
+                    </div>
+                }
             </div>
         </>}
 

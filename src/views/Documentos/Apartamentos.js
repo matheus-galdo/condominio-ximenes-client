@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
+import { UserContext } from '../../Context/UserProvider';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 import './Apartamentos.scss';
@@ -14,22 +15,18 @@ export default function Apartamentos(props) {
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
+    const { user } = useContext(UserContext)
     const { permissao } = usePermissao('apartamentos')
 
 
     useEffect(() => {
-        let mounted = true
-        if (!hasLoaded && apartamentos.length === 0) {
+        if (!hasLoaded) {
             api().get('apartamentos?proprietarios=true').then(response => {
-                if (mounted) {
-                    setHasLoaded(true)
-                    setApartamentos(response.data)
-                    setApartamentosOriginal(response.data)
-                }
+                setApartamentos(response.data)
+                setApartamentosOriginal(response.data)
+                setHasLoaded(true)
             })
         }
-
-        return () => mounted = false
     }, [apartamentos, hasLoaded])
 
 

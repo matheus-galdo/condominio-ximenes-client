@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import FormInput from "../../../../libs/FormInput";
+import FormInput from "../../../../libs/FormInput/FormInput";
 
 export default function FormList(props) {
 

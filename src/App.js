@@ -5,8 +5,7 @@ import {
   Route,
 } from "react-router-dom";
 import AuthProvider, { AuthContext } from "./Context/AuthProvider";
-import UserProvider, { UserContext } from "./Context/UserProvider";
-// import 'bootstrap/dist/css/bootstrap.min.css';
+import UserProvider from "./Context/UserProvider";
 
 import './assets/scss/style.scss'
 import { publicRoutes } from './routes'

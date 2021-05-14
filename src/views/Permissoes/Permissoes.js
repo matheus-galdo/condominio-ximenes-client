@@ -19,7 +19,7 @@ export default function Permissoes(props) {
     useEffect(() => {
 
         if (!hasFeteched) {
-            api().get('permissoes').then(response => {
+            api().get('permissoes?page=1').then(response => {
                 setPermissoes(response.data)
                 setPermissoesOriginal(response.data)
                 setHasFeteched(true)
@@ -36,7 +36,7 @@ export default function Permissoes(props) {
             return
         }
 
-        let filtered = permissoes.data.filter(permissao =>
+        let filtered = permissoessOriginal.data.filter(permissao =>
             (permissao.titulo.toLowerCase().indexOf(value) >= 0)
         )
 

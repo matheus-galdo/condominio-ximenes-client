@@ -1,11 +1,12 @@
 .list-item-container {
-
+    padding-top: 2rem;
 
     .list-item-card {
 
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+        align-items: center;
         padding: 1rem;
         border-radius: 0.5rem;
 

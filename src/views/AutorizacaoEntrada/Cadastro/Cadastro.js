@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import BackBtn from "../../../components/BackBtn/BackBtn";
-import FormInput from "../../../libs/FormInput";
+import FormInput from "../../../libs/FormInput/FormInput";
 import FormSteps from "./FormSteps";
 
 // let testeForm = [

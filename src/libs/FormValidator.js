@@ -1,3 +1,5 @@
+const primitiveTypes = ['string', 'boolean', 'number', 'bigint']
+
 let validationMessages = {
     required: 'Este campo é obrigatório',
     
@@ -10,6 +12,8 @@ let validationMessages = {
     max: 'Este campo deve ter até placeholder caracteres',
     min: 'Este campo deve ter ao menos placeholder caracteres',
     length: 'Este campo deve ter placeholder caracteres',
+
+    confirmed: 'Os campos não coincidem',
     email: 'Informe um e-mail válido',
     cpf: 'Informe um número de CPF válido',
     telefone: 'Informe um número de telefone válido',
@@ -63,12 +67,18 @@ let ruleValidators = {
         return (value.length !== size && value.length > 0);
     },
 
-    password_length: function (value) {
-        return (value.length < 8);
+    password_length: function (value, size = 8) {
+        return (value.length < size);
     },
 
 
     //custom
+    confirmed: function (value, otherFieldValue) {
+
+        console.log(value, otherFieldValue);
+        return value !== otherFieldValue;
+    },
+
     email: function (value) {
         var re = /\S+@\S+\.\S+/;
         return !re.test(value);
@@ -138,8 +148,7 @@ export default function FormValidator(data, rules, itens = []) {
     //retorna se não tiver nenhuma validação definida
     if (rules.length === 0 || rules === "" || !rules)  return input
 
-
-    let dataList = (typeof data === 'string' || typeof data === 'boolean') ? [data] : data
+    let dataList = (primitiveTypes.includes(typeof data)) ? [data] : data
     let rulesList = (typeof rules === 'string') ? rules.split('|') : rules
 
     dataList.forEach(dataItem => {
@@ -147,7 +156,6 @@ export default function FormValidator(data, rules, itens = []) {
 
             let [dataHasErrors, ruleName, ruleArg] = checkForDataErrors(dataItem, rule, itens)
             
-            // console.log(checkForDataErrors(dataItem, rule, itens));
             if (dataHasErrors) {
                 let errorObj = {
                     rule: ruleName,

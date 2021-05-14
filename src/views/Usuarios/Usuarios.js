@@ -5,54 +5,44 @@ import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
-import './Apartamentos.scss';
+import './Usuarios.scss';
 
-export default function Apartamentos(props) {
+export default function Usuarios(props) {
 
-    const [apartamentosOriginal, setApartamentosOriginal] = useState([])
-    const [apartamentos, setApartamentos] = useState([])
+    const [usuariosOriginal, setUsuariosOriginal] = useState([])
+    const [usuarios, setUsuarios] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
-    const { permissao } = usePermissao('apartamentos')
+    const { permissao } = usePermissao('usuarios')
 
 
     useEffect(() => {
-        let mounted = true
-        if (!hasLoaded && apartamentos.length === 0) {
-            api().get('apartamentos?proprietarios=true').then(response => {
-                if (mounted) {
-                    setHasLoaded(true)
-                    setApartamentos(response.data)
-                    setApartamentosOriginal(response.data)
-                }
+        if (!hasLoaded) {
+            api().get('usuarios').then(response => {
+                setUsuarios(response.data)
+                setUsuariosOriginal(response.data)
+                setHasLoaded(true)
             })
         }
-
-        return () => mounted = false
-    }, [apartamentos, hasLoaded])
+    }, [usuarios, hasLoaded])
 
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
 
         if (value === '') {
-            setApartamentos(apartamentosOriginal);
+            setUsuarios(usuariosOriginal);
             return
         }
 
-        let filtered = apartamentosOriginal.filter(apartamento =>
-            (apartamento.numero.toLowerCase().indexOf(value) >= 0) ||
-            (apartamento.bloco.toLowerCase().indexOf(value) >= 0) ||
-            (apartamento.bloco.toLowerCase().indexOf(value) >= 0)
+        let filtered = usuariosOriginal.filter(usuario =>
+            (usuario.name.toLowerCase().indexOf(value) >= 0) ||
+            (usuario.email.toLowerCase().indexOf(value) >= 0) ||
+            (usuario.type_name.nome.toLowerCase().indexOf(value) >= 0)
         )
 
-        //suposto filtro por nome do proprietário
-        // ((apartamento.proprietarios.length > 0)? 
-        //     apartamento.proprietarios.filter(proprietario => proprietario.user.name.indexOf(value) >= 0): false)
-        // console.log(filtered);
-
-        setApartamentos(filtered);
+        setUsuarios(filtered);
     }
 
 
@@ -81,12 +71,12 @@ export default function Apartamentos(props) {
         <BackBtn />
         {permissao.modulo && !permissao.acessar && <Redirect to='/nao-permitido' />}
 
-        <h1>Apartamentos</h1>
+        <h1>Usuários</h1>
 
         <div className='top-module-bar'>
             <SearchBar filter={filter} />
 
-            {permissao.criar && <Link to='/apartamentos/cadastro/' className='btn-primary'>
+            {permissao.criar && <Link to='/usuarios/cadastro/' className='btn-primary'>
                 + Adicionar
             </Link>}
         </div>
@@ -94,16 +84,16 @@ export default function Apartamentos(props) {
 
         <div className='list-item-container'>
 
-            {apartamentos.map((apartamento, id) => {
+            {usuarios.map((usuario, id) => {
 
-                let options = getItenOptions(apartamento, 'apartamentos', setHasLoaded)
+                let options = getItenOptions(usuario, 'usuarios', setHasLoaded)
 
                 return <div key={id} className='list-item-card'>
                     <div className='list-item-card-content'>
-                        <Link to={`/apartamentos/${apartamento.id}`}>
-                            <h1>Apartamento {apartamento.numero}</h1>
-                            <p>Bloco: {apartamento.bloco} - {apartamento.andar}° andar</p>
-                            <p>Status: {apartamento.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                        <Link to={`/usuarios/${usuario.id}`}>
+                            <h1>{usuario.name}</h1>
+                            <p>Tipo: {usuario.type_name.nome}</p>
+                            <p>Status: {usuario.deleted_at ? 'Desativado' : 'Ativado'}</p>
                         </Link>
                     </div>
 

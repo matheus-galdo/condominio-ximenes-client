@@ -4,15 +4,21 @@ import storage from '../libs/storage';
 
 
 
-const api = (auth = false) => {
+const api = (auth = false, responseType = false) => {
 
   let token = (localStorage.token)? JSON.parse(localStorage.token).access_token : '';
  
-  const axiosInstance = axios.create({
+
+  let headers = {
     baseURL: (process.env.NODE_ENV === 'development') ? 'http://localhost:8000/api/' : 'a definir',
-  });
+  }
+  if (responseType) headers.responseType = responseType;
+
+  const axiosInstance = axios.create(headers);
   
   if (!auth) axiosInstance.defaults.headers.common['Authorization'] ='Bearer ' + token;
+
+  
 
 
   axiosInstance.interceptors.response.use(function (response) {
