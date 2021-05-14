@@ -20,45 +20,52 @@ export default function Cadastro(props) {
     const history = useHistory();
     let { id } = useParams();
     const { permissao } = usePermissao('permissoes')
-   
+
 
 
     useEffect(() => {
-        
+        let mounted = true
+
         if (typeof id === 'undefined' && !hasLoaded && !permissaoItens.permissoes_with_modulo) {
             api().get(`modulos`).then(response => {
+                if (mounted) {
+                    let userTypes = {}
+                    userTypes.permissoes_with_modulo = response.data.map(modulo => {
+                        return {
+                            acessar: true,
+                            criar: true,
+                            editar: true,
+                            excluir: true,
+                            gerenciar: true,
+                            visualizar: true,
+                            modulo: modulo,
+                            modulo_sistema_id: modulo.id
+                        }
+                    })
 
-                let userTypes = {}
-                userTypes.permissoes_with_modulo = response.data.map(modulo => {
-                    return {
-                        acessar: true,
-                        criar: true,
-                        editar: true,
-                        excluir: true,
-                        gerenciar: true,
-                        visualizar: true,
-                        modulo: modulo,
-                        modulo_sistema_id: modulo.id
-                    }
-                })
-
-                setPermissaoItens(userTypes)
-                setHasLoaded(true)
+                    setPermissaoItens(userTypes)
+                    setHasLoaded(true)
+                }
             })
         }
+        return () => mounted = false
     }, [hasLoaded, id, permissaoItens])
 
 
     useEffect(() => {
+        let mounted = true
         if (typeof id !== 'undefined' && !hasLoaded && !permissaoItens.permissoes_with_modulo) {
             api().get(`permissoes/${id}`).then(response => {
-                setPermissaoItens(response.data)
-                setNome({ valid: true, errorMessage: "", value: response.data.nome })
-                setIsAdmin({ valid: true, errorMessage: "", value: response.data.is_admin })
-                setStepTrigered(stepTrigered + 1)
-                setHasLoaded(true)
+                if (mounted) {
+                    setPermissaoItens(response.data)
+                    setNome({ valid: true, errorMessage: "", value: response.data.nome })
+                    setIsAdmin({ valid: true, errorMessage: "", value: response.data.is_admin })
+                    setStepTrigered(stepTrigered + 1)
+                    setHasLoaded(true)
+                }
             })
         }
+        return () => mounted = false
     }, [id, permissaoItens, stepTrigered, hasLoaded])
 
 
@@ -82,7 +89,7 @@ export default function Cadastro(props) {
         setStepTrigered(stepTrigered + 1)
 
         let fields = { nome, isAdmin }
-        let formData = {permissoes: permissaoItens.permissoes_with_modulo}
+        let formData = { permissoes: permissaoItens.permissoes_with_modulo }
 
         let valid = true
         Object.keys(fields).forEach(fieldName => {
@@ -95,7 +102,7 @@ export default function Cadastro(props) {
 
             if (id) {
                 api().patch(`permissoes/${id}`, formData).then(response => history.push('/permissoes'))
-            }else{
+            } else {
                 api().post('permissoes', formData).then(response => history.push('/permissoes'))
             }
         }

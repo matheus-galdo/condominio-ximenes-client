@@ -17,13 +17,17 @@ export default function Proprietarios(props) {
 
 
     useEffect(() => {
+        let mounted = true
         if (!hasLoaded) {
             api().get('proprietarios').then(response => {
-                setProprietarios(response.data)
-                setProprietariosOriginal(response.data)
-                setHasLoaded(true)
+                if (mounted) {
+                    setProprietarios(response.data)
+                    setProprietariosOriginal(response.data)
+                    setHasLoaded(true)
+                }
             })
         }
+        return () => mounted = false
     }, [proprietarios, hasLoaded])
 
 

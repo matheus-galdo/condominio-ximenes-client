@@ -7,12 +7,9 @@ import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 import './Documentos.scss';
 
-// import file from '../../assets/Icons/file.svg'
 
 function downloadFile(e, documento) {
     e.preventDefault()
-
-
     api(false, 'blob').get(`download-file?file=${documento.id}&module=documento`).then(response => {
         console.log(response);
 
@@ -20,7 +17,7 @@ function downloadFile(e, documento) {
         try {
             filename = response.headers['content-disposition'].split(';')[1].split('=')[1]
         } catch (error) {
-            // console.log(error);
+
         }
 
         let url = URL.createObjectURL(new Blob([response.data]));

@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import api from '../../../Service/api';
-import './Detalhes.scss';
 
 export default function Detalhes(props) {
 

@@ -3,7 +3,6 @@ import { Redirect, useParams } from 'react-router';
 import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import api from '../../../Service/api';
-import './Detalhes.scss';
 
 export default function Detalhes(props) {
 

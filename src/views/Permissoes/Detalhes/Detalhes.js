@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react';
 import { Redirect, useHistory, useParams } from 'react-router';
+import { useEffect, useState } from 'react';
 import { FiCheckCircle } from "react-icons/fi";
 import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
@@ -18,12 +18,16 @@ export default function Detalhes(props) {
 
 
     useEffect(() => {
+        let mounted = true
         if (!hasLoaded && !permissaoItens.permissoes_with_modulo) {
             api().get(`permissoes/${id}`).then(response => {
-                setPermissaoItens(response.data)
-                setHasLoaded(true)
+                if (mounted) {
+                    setPermissaoItens(response.data)
+                    setHasLoaded(true)
+                }
             })
         }
+        return () => mounted = false
     }, [hasLoaded, id, permissaoItens])
 
 

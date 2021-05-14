@@ -4,7 +4,6 @@ import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
-import './Cadastro.scss';
 
 export default function Cadastro(props) {
 
@@ -26,24 +25,33 @@ export default function Cadastro(props) {
 
 
     useEffect(() => {
+        let mounted = true
         if (userTypes.length === 0) {
-            api().get(`listar-permissoes-admin`).then(response => setUserTypes(response.data))
-        }
+            api().get(`listar-permissoes-admin`).then(response => {
+                if (mounted) {
+                    setUserTypes(response.data)                    
+                }
+            })
+        }        return () => mounted = false
     }, [userTypes])
 
     useEffect(() => {
+        let mounted = true
         if (id && !hasLoaded) {
             api().get(`usuarios/${id}`).then(response => {
-
-                setName({ valid: false, errorMessage: "", value: response.data.name })
-                setEmail({ valid: false, errorMessage: "", value: response.data.email })
-                setPassword({ valid: false, errorMessage: "", value: "" })
-                setUserType({ valid: false, errorMessage: "", value: response.data.type })
-
-                setStepTrigered(stepTrigered + 1)
-                setHasLoaded(true)
+                if (mounted) {
+                    setName({ valid: false, errorMessage: "", value: response.data.name })
+                    setEmail({ valid: false, errorMessage: "", value: response.data.email })
+                    setPassword({ valid: false, errorMessage: "", value: "" })
+                    setUserType({ valid: false, errorMessage: "", value: response.data.type })
+                    
+                    setStepTrigered(stepTrigered + 1)
+                    setHasLoaded(true)
+                }
             })
         }
+
+        return () => mounted = false
     }, [stepTrigered, hasLoaded, id])
 
 

@@ -4,7 +4,6 @@ import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
-import './Cadastro.scss';
 
 export default function Cadastro(props) {
 
@@ -20,18 +19,20 @@ export default function Cadastro(props) {
     let { id } = useParams();
 
     useEffect(() => {
-
+        let mounted = true
         if (id && !hasLoaded) {
             api().get(`apartamentos/${id}`).then(response => {
-
-                setNumero({ valid: false, errorMessage: "", value: response.data.numero })
-                setBloco({ valid: false, errorMessage: "", value: response.data.bloco })
-                setAndar({ valid: false, errorMessage: "", value: response.data.andar })
-
-                setStepTrigered(stepTrigered + 1)
-                setHasLoaded(true)
+                if (mounted) {
+                    setNumero({ valid: false, errorMessage: "", value: response.data.numero })
+                    setBloco({ valid: false, errorMessage: "", value: response.data.bloco })
+                    setAndar({ valid: false, errorMessage: "", value: response.data.andar })
+                    
+                    setStepTrigered(stepTrigered + 1)
+                    setHasLoaded(true)
+                }
             })
         }
+        return () => mounted = false
     }, [stepTrigered, hasLoaded, id])
 
 
@@ -56,7 +57,7 @@ export default function Cadastro(props) {
 
             if (id) {
                 api().patch(`apartamentos/${id}`, formData).then(response => history.push('/apartamentos'))
-            }else{
+            } else {
                 api().post('apartamentos', formData).then(response => history.push('/apartamentos'))
             }
         }
@@ -68,7 +69,7 @@ export default function Cadastro(props) {
         {permissao.modulo && id && (!permissao.acessar || !permissao.editar) && <Redirect to='/nao-permitido' />}
 
         <BackBtn to='/apartamentos' />
-        <h1>{typeof id === 'undefined'? 'Cadastrar novo apartamento':'Editar apartamento'}</h1>
+        <h1>{typeof id === 'undefined' ? 'Cadastrar novo apartamento' : 'Editar apartamento'}</h1>
         <p>Defina as informações do apartamento</p>
         <form>
             <FormInput

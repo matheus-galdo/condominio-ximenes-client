@@ -1,4 +1,3 @@
-import './RegrasNormas.scss';
 
 export default function RegrasNormas(props) {
     

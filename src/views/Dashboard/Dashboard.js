@@ -11,11 +11,13 @@ export default function Dashboard(props) {
 
     const [alerts, setAlerts] = useState([])
     const { user } = useContext(UserContext)
-    
+
     useEffect(() => {
+        let mounted = true
         api().get('dashboard').then(response => {
-            setAlerts(response.data)
+            if(mounted) setAlerts(response.data)
         })
+        return () => mounted = false
     }, [])
 
     return (
@@ -31,7 +33,7 @@ export default function Dashboard(props) {
                         <h1>Avisos</h1>
                     </div>
                     <div className='dashboard-alerts'>
-                        {alerts.map((alert,id) => <AlertCard key={id} title={alert.titulo} content={alert.descricao}/>)}
+                        {alerts.map((alert, id) => <AlertCard key={id} title={alert.titulo} content={alert.descricao} />)}
                     </div>
                 </div>
             </div>

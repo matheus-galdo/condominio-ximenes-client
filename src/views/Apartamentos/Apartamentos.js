@@ -5,7 +5,6 @@ import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
-import './Apartamentos.scss';
 
 export default function Apartamentos(props) {
 

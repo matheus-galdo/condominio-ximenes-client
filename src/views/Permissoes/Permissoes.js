@@ -5,7 +5,6 @@ import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
-import './Permissoes.scss';
 
 export default function Permissoes(props) {
 
@@ -17,14 +16,17 @@ export default function Permissoes(props) {
     const { permissao } = usePermissao('permissoes')
 
     useEffect(() => {
-
+        let mounted = true
         if (!hasFeteched) {
             api().get('permissoes?page=1').then(response => {
-                setPermissoes(response.data)
-                setPermissoesOriginal(response.data)
-                setHasFeteched(true)
+                if (mounted) {
+                    setPermissoes(response.data)
+                    setPermissoesOriginal(response.data)
+                    setHasFeteched(true)
+                }
             })
         }
+        return () => mounted = false
     }, [hasFeteched])
 
 
@@ -48,7 +50,7 @@ export default function Permissoes(props) {
 
         let options = []
 
-        if(permissao.editar) options.push({ name: 'Editar', f: () => history.push(`/${moduloName}/cadastro/` + permissaoItem.id) })                
+        if (permissao.editar) options.push({ name: 'Editar', f: () => history.push(`/${moduloName}/cadastro/` + permissaoItem.id) })
 
         if (permissaoItem.deleted_at) {
             options.push({ name: 'Ativar', f: () => api().put(`${moduloName}/${permissaoItem.id}`, { ativar: true }).then(response => reload(false)) })
@@ -56,7 +58,7 @@ export default function Permissoes(props) {
             options.push({ name: 'Desativar', f: () => api().put(`${moduloName}/${permissaoItem.id}`, { ativar: false }).then(response => reload(false)) })
         }
 
-        if(permissao.excluir && permissaoItem.deleted_at){
+        if (permissao.excluir && permissaoItem.deleted_at) {
             options.push({ name: 'Excluir', f: () => api().delete(`${moduloName}/${permissaoItem.id}`).then(response => reload(false)) })
         }
 

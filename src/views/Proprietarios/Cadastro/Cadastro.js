@@ -4,7 +4,6 @@ import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
-import './Cadastro.scss';
 
 export default function Cadastro(props) {
 
