@@ -37,7 +37,9 @@ const Contas_Cadastro = React.lazy(() => import('./views/Ocorrencias/Ocorrencias
 
 
 const Boletos = React.lazy(() => import('./views/Boletos/Boletos'));
-const Boletos_Cadastro = React.lazy(() => import('./views/Boletos/Boletos'));
+const Boletos_Cadastro = React.lazy(() => import('./views/Boletos/Cadastro/Cadastro'));
+const Boletos_Detalhes = React.lazy(() => import('./views/Boletos/Detalhes/Detalhes'));
+
 
 const Proprietarios = React.lazy(() => import('./views/Proprietarios/Proprietarios'));
 const Proprietarios_Cadastro = React.lazy(() => import('./views/Proprietarios/Cadastro/Cadastro'));
@@ -104,8 +106,11 @@ export const routes = [
     {path: '/contas', exact: true, component: Contas},
 
 
+    {path: '/boletos/cadastro/:id', exact: true, component: Boletos_Cadastro},
     {path: '/boletos/cadastro', exact: true, component: Boletos_Cadastro},
     {path: '/boletos', exact: true, component: Boletos},
+    {path: '/boletos/:id', exact: true, component: Boletos_Detalhes},
+
 
     
     {path: '/proprietarios/cadastro', exact: true, component: Proprietarios_Cadastro},

@@ -1,3 +1,4 @@
+import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
@@ -7,9 +8,9 @@ import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 
 
-function downloadFile(e, documento) {
+function downloadFile(e, boleto) {
     e.preventDefault()
-    api(false, 'blob').get(`download-file?file=${documento.id}&module=documento`).then(response => {
+    api(false, 'blob').get(`download-file?file=${boleto.id}&module=boleto`).then(response => {
         console.log(response);
 
         let filename = 'file.txt'
@@ -30,23 +31,23 @@ function downloadFile(e, documento) {
 
 export default function Boletos(props) {
 
-    const [documentosOriginal, setDocumentosOriginal] = useState([])
-    const [documentos, setDocumentos] = useState([])
+    const [boletosOriginal, setBoletosOriginal] = useState([])
+    const [boletos, setBoletos] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
-    const { permissao } = usePermissao('documentos')
+    const { permissao } = usePermissao('boletos')
 
 
     useEffect(() => {
         let mounted = true;
 
-        if (!hasLoaded && documentosOriginal.length === 0) {
-            api().get('documentos').then(response => {
+        if (!hasLoaded) {
+            api().get('boletos').then(response => {
                 if (mounted) {
-                    setDocumentosOriginal(response.data)
-                    setDocumentos(response.data)
                     setHasLoaded(true)
+                    setBoletosOriginal(response.data)
+                    setBoletos(response.data)
                 }
             })
         }
@@ -54,23 +55,23 @@ export default function Boletos(props) {
         return () => {
             mounted = false
         }
-    }, [documentos, hasLoaded, documentosOriginal])
+    }, [boletos, hasLoaded, boletosOriginal])
 
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
 
         if (value === '') {
-            setDocumentos(documentosOriginal);
+            setBoletos(boletosOriginal);
             return
         }
 
-        let filtered = documentosOriginal.filter(documento =>
-            (documento.nome.toLowerCase().indexOf(value) >= 0) ||
-            (documento.nome_original.toLowerCase().indexOf(value) >= 0)
+        let filtered = boletosOriginal.filter(boleto =>
+            (boleto.nome.toLowerCase().indexOf(value) >= 0) ||
+            (boleto.nome_original.toLowerCase().indexOf(value) >= 0)
         )
 
-        setDocumentos(filtered);
+        setBoletos(filtered);
     }
 
 
@@ -86,6 +87,12 @@ export default function Boletos(props) {
             options.push({ name: 'Desativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: false }).then(response => reload(false)) })
         }
 
+        if (!item.pago) {
+            options.push({ name: 'Pagamento realizado', f: () => api().put(`${moduloName}/${item.id}`, { pagar: true }).then(response => reload(false)) })
+        } else {
+            options.push({ name: 'Reverter Pagamento', f: () => api().put(`${moduloName}/${item.id}`, { pagar: false }).then(response => reload(false)) })
+        }
+
         if (permissao.excluir && item.deleted_at) {
             options.push({ name: 'Excluir', f: () => api().delete(`${moduloName}/${item.id}`).then(response => reload(false)) })
         }
@@ -99,12 +106,12 @@ export default function Boletos(props) {
         <BackBtn />
         {permissao.modulo && !permissao.acessar && <Redirect to='/nao-permitido' />}
 
-        <h1>Documentos</h1>
+        <h1>Boletos</h1>
 
         <div className='top-module-bar'>
             <SearchBar filter={filter} />
 
-            {permissao.criar && <Link to='/documentos/cadastro/' className='btn-primary'>
+            {permissao.criar && <Link to='/boletos/cadastro/' className='btn-primary'>
                 + Adicionar
             </Link>}
         </div>
@@ -112,34 +119,36 @@ export default function Boletos(props) {
 
         <div className='list-item-container'>
 
-            {documentos.map((documento, id) => {
+            {boletos.map((boleto, id) => {
 
-                let options = getItenOptions(documento, 'documentos', setHasLoaded)
+                let options = getItenOptions(boleto, 'boletos', setHasLoaded)
 
                 return <div key={id} className='list-item-card'>
-                    <Link to={`/documentos/${documento.id}`}>
 
-                        <span className='file-icon'>
-                            {documento.extensao}
-                        </span>
-                    </Link>
+                    <div className='list-item-card-date'>
+                        <p>{moment(boleto.vencimento).format('DD')}</p>
+                        <p>{moment(boleto.vencimento).format('MMM')}</p>
+                    </div>
 
                     <div className='list-item-card-content'>
                         {permissao.visualizar ?
-                            <Link to={`/documentos/${documento.id}`}>
-                                <h1>{documento.nome}</h1>
-                                <p>Status: {documento.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                            <Link to={`/boletos/${boleto.id}`}>
+                                <h1>{boleto.nome}</h1>
+                                <p>Apartamento {boleto.apartamento.numero}{boleto.apartamento.bloco}</p>
+                                <p>{boleto.pago ? 'Pago' : 'Em aberto'}</p>
+                                <p>Status: {boleto.deleted_at ? 'Desativado' : 'Ativado'}</p>
 
                             </Link>
                             :
                             <>
-                                <h1>{documento.nome}</h1>
-                                <p>Status: {documento.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                                <h1>{boleto.nome}</h1>
+                                <p>{boleto.pago ? 'Pago' : 'Em aberto'}</p>
+                                <p>{boleto.codigo_barras}</p>
                             </>
                         }
                     </div>
 
-                    <button onClick={e => downloadFile(e, documento)} className='btn-primary small-btn'>
+                    <button onClick={e => downloadFile(e, boleto)} className='btn-primary small-btn'>
                         Download
                     </button>
 

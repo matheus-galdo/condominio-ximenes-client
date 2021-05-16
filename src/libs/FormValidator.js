@@ -56,35 +56,41 @@ let ruleValidators = {
 
     //tamanho do campo
     max: function (value, size) {
+        if(value === '') return false
         return (value.length > size);
     },
 
     min: function (value, size) {
+        if(value === '') return false
         return (value.length < size);
     },
 
     length: function (value, size) {
+        if(value === '') return false
         return (value.length !== size && value.length > 0);
     },
 
     password_length: function (value, size = 8) {
+        if(value === '') return false
         return (value.length < size);
     },
 
 
     //custom
     confirmed: function (value, otherFieldValue) {
-
+        if(value === '') return false
         console.log(value, otherFieldValue);
         return value !== otherFieldValue;
     },
 
     email: function (value) {
+        if(value === '') return false
         var re = /\S+@\S+\.\S+/;
         return !re.test(value);
     },
 
     cpf: function (value) {
+        if(value === '') return false
         let clearedValue = value.replace(/(\.)?(-)?(\s)?/gm, '')
         if (clearedValue.length !== 11) return true;
 
@@ -93,6 +99,7 @@ let ruleValidators = {
     },
 
     telefone: function (value) {
+        if(value === '') return false
         let clearedValue = value.replace(/(\.)?(-)?(\s)?(\()?(\))?/gm, '')
         if(clearedValue.length > 11) return true;
         var re = /(\(?\d{2}\)?)?\s?(\d{4,5})-?\s?(\d{4})/;
@@ -100,6 +107,7 @@ let ruleValidators = {
     },
 
     placaCarro: function (value) {
+        if(value === '') return false
         if(value.length !== 7) return true;
         var re = /([A-Z]{3}[0-9][0-9A-Z][0-9]{2})/;
         return !re.test(value);

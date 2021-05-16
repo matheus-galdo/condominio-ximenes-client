@@ -76,8 +76,8 @@ export default function Cadastro(props) {
                     setEmail({ valid: false, errorMessage: "", value: response.data.email })
                     setPassword({ valid: false, errorMessage: "", value: "" })
                     setUserType({ valid: false, errorMessage: "", value: response.data.type })
-                    setCelular({ valid: false, errorMessage: "", value: response.data.proprietario.telefone })
-                    setApartamento({ valid: false, errorMessage: "", value: response.data.proprietario.apartamentos.map(ap => ap.id) })
+                    setCelular({ valid: false, errorMessage: "", value: response.data.telefone })
+                    setApartamento({ valid: false, errorMessage: "", value: response.data.apartamentos.map(ap => ap.id) })
                     setStepTrigered(stepTrigered + 1)
                 }
             })
@@ -199,6 +199,8 @@ export default function Cadastro(props) {
             <FormInput
                 name='Celular'
                 type='tel'
+                optional
+                showOptional
                 setValue={setCelular}
                 placeholder='Ex: 00 00000-0000'
                 validation={'telefone'}

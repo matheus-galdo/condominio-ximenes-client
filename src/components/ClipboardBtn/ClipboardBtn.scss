@@ -1,0 +1,16 @@
+.clipboard-btn{
+    border: 0;
+    background-color: unset;
+    outline: unset;
+    cursor: pointer;
+    color: var(--color-primary);
+    
+    &:hover{
+        color: var(--color-primary-dark);
+    }
+
+    svg{
+        width: 1.5rem;
+        height: 1.4rem;
+    }
+}
