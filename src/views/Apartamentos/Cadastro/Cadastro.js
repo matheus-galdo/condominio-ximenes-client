@@ -18,6 +18,7 @@ export default function Cadastro(props) {
     const { permissao } = usePermissao('apartamentos')
     let { id } = useParams();
 
+    console.log(numero);
     useEffect(() => {
         let mounted = true
         if (id && !hasLoaded) {
@@ -75,7 +76,7 @@ export default function Cadastro(props) {
             <FormInput
                 type='text'
                 name='Número'
-                validation='required'
+                validation='required|number'
                 defaultValue={numero}
                 setValue={setNumero}
                 trigger={stepTrigered}

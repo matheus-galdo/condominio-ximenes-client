@@ -53,7 +53,12 @@ export default function Proprietarios(props) {
 
         let options = []
 
-        if (permissao.editar) options.push({ name: 'Editar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })
+        if (!Boolean(item.aprovado)) {
+            if (permissao.editar) options.push({ name: 'Editar e aprovar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })            
+        }else{
+            if (permissao.editar) options.push({ name: 'Editar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })
+        }
+
 
         if (item.deleted_at) {
             options.push({ name: 'Ativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: true }).then(response => reload(false)) })
@@ -96,7 +101,11 @@ export default function Proprietarios(props) {
                         <Link to={`/proprietarios/${proprietario.id}`}>
                             <h1>{proprietario.name}</h1>
                             <p>Tipo: {proprietario.type_name.nome}</p>
-                            <p>Status: {proprietario.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                            <p>Status: {Boolean(proprietario.aprovado) ? 
+                                proprietario.deleted_at ? 'Desativado' : 'Ativado' 
+                            :
+                                'Aguardando aprovação'
+                            }</p>
                         </Link>
                     </div>
 

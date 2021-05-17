@@ -3,9 +3,9 @@ const primitiveTypes = ['string', 'boolean', 'number', 'bigint']
 let validationMessages = {
     required: 'Este campo é obrigatório',
     
-    string: 'Este campo deve ser um texto',
-    number: 'Este campo deve ser um número',
-    bigint: 'Este campo deve ser um número',
+    string: 'Este campo aceita apenas texto',
+    number: 'Este campo aceita apenas números',
+    bigint: 'Este campo aceita apenas números',
     boolean: 'Formato incorreto',
     object: 'Formato incorreto',
 
@@ -37,11 +37,14 @@ let ruleValidators = {
     },
 
     number: function (value) {
-        return (typeof value !== 'number');
+        value = Number(value)
+        return (typeof value !== 'number' || isNaN(value));
     },
 
     bigint: function (value) {
-        return (typeof value !== 'bigint');
+        value = Number(value)
+        return (typeof value !== 'bigint' || isNaN(value));
+
     },
 
     boolean: function (value) {

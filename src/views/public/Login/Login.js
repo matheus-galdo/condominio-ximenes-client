@@ -8,8 +8,6 @@ import api from "../../../Service/api";
 import './login.scss';
 import { UserContext } from "../../../Context/UserProvider";
 
-
-
 export default function Teste(props) {
 
     const [user, setUserState] = useState(null)
@@ -19,6 +17,7 @@ export default function Teste(props) {
     const history = useHistory();
     const { auth, setAuth } = useContext(AuthContext)
     const { setUser } = useContext(UserContext)
+    
 
 
     useEffect(() => {
@@ -44,13 +43,14 @@ export default function Teste(props) {
             history.push('/dashboard')
 
         }).catch(error => {
-            setErrorMsg('Usuário ou senha incorretos')
+            setErrorMsg(error.response.data.message)
         });
     }
 
 
     return (
         <>
+            {/* <ToastContainer/> */}
             {auth.isAuthenticated ?
                 <>
                     <Redirect to='/dashboard' />

@@ -25,8 +25,8 @@ export default function AccountMenu(props) {
         setUser({})
         storage.removeItem('token')
         storage.removeItem('user')
-        history.push('/login')
-    }
+        window.location.href = '/login'
+}
 
 
     return (
