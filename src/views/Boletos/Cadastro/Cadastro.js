@@ -1,4 +1,3 @@
-import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Redirect, useHistory, useParams } from 'react-router';
 import BackBtn from '../../../components/BackBtn/BackBtn';

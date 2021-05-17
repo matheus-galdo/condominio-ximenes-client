@@ -156,7 +156,7 @@ export default function FormValidator(data, rules, itens = []) {
     //retorna se não tiver nenhuma validação definida
     if (rules.length === 0 || rules === "" || !rules)  return input
 
-    let dataList = (primitiveTypes.includes(typeof data)) ? [data] : data
+    let dataList = (primitiveTypes.includes(typeof data) || Array.isArray(data)) ? [data] : data
     let rulesList = (typeof rules === 'string') ? rules.split('|') : rules
 
     dataList.forEach(dataItem => {

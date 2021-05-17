@@ -49,8 +49,8 @@ export default function FormList(props) {
     }
 
 
-    console.log('alo');
     function saveItem(event) {
+        console.log(stepTrigered);
         setStepTrigered(stepTrigered + 1)
         event.preventDefault()
 
@@ -88,9 +88,6 @@ export default function FormList(props) {
         event.preventDefault()
         props.setStepTrigered(props.stepTrigered + 1)
 
-        console.log(props.stepTrigered);
-
-
         let fields = { naoPossuiVeiculo: props.naoPossuiVeiculo }
 
         let valid = true
@@ -102,7 +99,7 @@ export default function FormList(props) {
 
         if (valid) {
             props.setStepTrigered(0)
-            // props.nextStep()
+            props.nextStep()
         }
     }
     

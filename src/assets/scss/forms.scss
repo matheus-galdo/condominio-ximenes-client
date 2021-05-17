@@ -192,6 +192,13 @@
             margin-right: 1rem;
             // width: calc(50% - 1rem);
             flex-shrink: 1;
+
+            &.col-1{ flex: 1 8.33%;}
+            &.col-2{ flex: 1 16.66%;}
+            &.col-3{ flex: 1 25%;}
+            &.col-4{ flex: 1 33.33%;}
+            &.col-5{ flex: 1 41.66%;}
+            &.col-6{ flex: 1 50%;}
         }
 
         .form-group:last-child {

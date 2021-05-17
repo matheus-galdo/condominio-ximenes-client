@@ -25,7 +25,7 @@ export default function FormInput(props) {
 
     const [parsedName] = useState(parseInputName(props.name))
     const [value, setValue] = useState({ value: props.defaultValue.value || '', valid: true, errorMessage: '' })
-
+    
     const onDrop = useCallback((acceptedFiles, fileRejections) => {
         validateDropzoneField({ acceptedFiles, fileRejections })
     }, [])
@@ -171,7 +171,6 @@ export default function FormInput(props) {
 
         let handler = { value: e.target.value, valid: true, errorMessage: '' }
         let validator = FormValidator(handler.value, getValidationRules())
-
 
         if (!validator.isValid) {
             let firstError = validator.errors[0].message
@@ -319,7 +318,7 @@ export default function FormInput(props) {
 
     return (
         <>
-            <div data-input-type={props.type || 'text'} className={'form-group ' + (props.className || '')}>
+            <div data-input-type={props.type || 'text'} className={'form-group ' + (props.className || '') + (props.col? `col-${props.col}`: '') }>
                 <ReactTooltip />
 
                 {props.type === 'checkbox' ? <>

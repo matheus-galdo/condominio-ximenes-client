@@ -1,5 +1,7 @@
 .list-item-container {
     padding-top: 2rem;
+    width: 100%;
+
 
     .list-item-card {
 
@@ -15,17 +17,19 @@
             background-color: #f3f3f3;
         }
 
-        &-date{
+        &-date {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             margin-right: 1rem;
-            p:first-child{
+
+            p:first-child {
                 text-align: center;
                 font-size: 1.3rem;
             }
-            p:last-child{
+
+            p:last-child {
                 font-size: 0.7rem;
                 text-transform: uppercase;
             }
@@ -39,6 +43,26 @@
             align-items: center;
             margin-right: 1rem;
 
+            > h1, > p {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                width: 100%;
+                height: 100%;
+                color: var(--text-dark-primary);
+            }
+
+            > p {
+                margin-top: 0.4rem;
+                font-size: 0.9rem;
+                color: var(--text-dark-secondary);
+            }
+
+            > h1 {
+                font-size: 1.1rem;
+                font-weight: 500;
+            }
+
             a {
                 text-decoration: none;
                 width: 100%;
@@ -50,11 +74,11 @@
                 justify-content: center;
 
 
-
                 h1 {
                     font-size: 1.1rem;
                     font-weight: 500;
                 }
+
 
                 p {
                     margin-top: 0.4rem;

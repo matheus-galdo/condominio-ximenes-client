@@ -28,21 +28,21 @@ export default function AutorizacaoEntrada(props) {
 
     useEffect(() => {
 
-    },[locatariosOriginal])
+    }, [locatariosOriginal])
 
-    
-    
+
+
     function filter(e) {
         let value = e.target.value.toLowerCase()
 
-        if(value === ''){
+        if (value === '') {
             setLocatarios(locatariosOriginal);
             return
         }
 
-        let filtered = locatarios.filter(locatario => 
-            (locatario.nome.toLowerCase().indexOf(value) >= 0) || 
-            (locatario.user.name.toLowerCase().indexOf(value) >= 0) || 
+        let filtered = locatarios.filter(locatario =>
+            (locatario.nome.toLowerCase().indexOf(value) >= 0) ||
+            (locatario.user.name.toLowerCase().indexOf(value) >= 0) ||
             (moment(locatario.data_chegada).format('L').indexOf(value) >= 0)
         )
 
@@ -67,33 +67,34 @@ export default function AutorizacaoEntrada(props) {
 
             <h1>Autorização Entrada</h1>
             <div className='top-module-bar'>
-                <SearchBar filter={filter}/>
+                <SearchBar filter={filter} />
 
                 <Link to='/autorizacao-de-entrada/cadastro/' className='btn-primary'>
                     + Adicionar
                 </Link>
             </div>
 
+            <div className="list-item-container">
+                {locatarios.map((locatario, id) => {
 
-            {locatarios.map((locatario, id) => {
+                    const options = [
+                        { name: 'Editar', f: () => history.push('/autorizacao-de-entrada/cadastro/' + locatario.id) },
+                        { name: 'Excluir', f: () => api().delete('locatario/' + locatario.id).then(response => deleted(locatario)) }
+                    ]
 
-                const options = [
-                    { name: 'Editar', f: () => history.push('/autorizacao-de-entrada/cadastro/'+locatario.id) },
-                    { name: 'Excluir', f: () => api().delete('locatario/'+locatario.id).then(response => deleted(locatario)) }
-                ]
+                    return <div key={id} className='list-item-card'>
+                        <div className='list-item-card-content'>
+                            <Link to={'/autorizacao-de-entrada/' + locatario.id}>
+                                <h1>{locatario.nome}</h1>
+                                <p>{moment(locatario.data_chegada).format('L')}</p>
+                                {<p>Apartamento: {locatario.apartamento.numero} {locatario.apartamento.bloco} - {locatario.apartamento.andar}° andar</p>}
+                            </Link>
+                        </div>
 
-                return <div key={id} className='list-item-card'>
-                    <div className='list-item-card-content'>
-                        <Link to={'/autorizacao-de-entrada/' + locatario.id}>
-                            <h1>{locatario.nome}</h1>
-                            <p>{moment(locatario.data_chegada).format('L')}</p>
-                            {user.type !== 4 && <p>Proprietário: {locatario.user.name}</p>}
-                        </Link>
+                        {user.type === 1 && <OptionsBtn options={options} />}
                     </div>
-
-                    {user.type === 1 && <OptionsBtn options={options} />}
-                </div>
-            })}
+                })}
+            </div>
 
         </div>
     )

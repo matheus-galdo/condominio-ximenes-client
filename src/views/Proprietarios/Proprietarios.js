@@ -87,16 +87,16 @@ export default function Proprietarios(props) {
 
         <div className='list-item-container'>
 
-            {proprietarios.map((prorpietario, id) => {
+            {proprietarios.map((proprietario, id) => {
 
-                let options = getItenOptions(prorpietario, 'proprietarios', setHasLoaded)
+                let options = getItenOptions(proprietario, 'proprietarios', setHasLoaded)
 
                 return <div key={id} className='list-item-card'>
                     <div className='list-item-card-content'>
-                        <Link to={`/proprietarios/${prorpietario.id}`}>
-                            <h1>{prorpietario.name}</h1>
-                            <p>Tipo: {prorpietario.type_name.nome}</p>
-                            <p>Status: {prorpietario.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                        <Link to={`/proprietarios/${proprietario.id}`}>
+                            <h1>{proprietario.name}</h1>
+                            <p>Tipo: {proprietario.type_name.nome}</p>
+                            <p>Status: {proprietario.deleted_at ? 'Desativado' : 'Ativado'}</p>
                         </Link>
                     </div>
 

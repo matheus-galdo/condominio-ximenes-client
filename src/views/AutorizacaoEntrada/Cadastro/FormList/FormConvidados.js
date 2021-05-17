@@ -11,14 +11,16 @@ export default function FormList(props) {
 
     const [nomeConvidado, setNomeConvidado] = useState({ valid: false, errorMessage: "", value: "" })
     const [cpf, setCpf] = useState({ valid: false, errorMessage: "", value: "" })
-    const [celular, setCelular] = useState({ valid: false, errorMessage: "", value: "" })
-    const [email, setEmail] = useState({ valid: false, errorMessage: "", value: "" })
+    const [celular, setCelular] = useState({ valid: true, errorMessage: "", value: "" })
     const [observacoes, setObservacoes] = useState({ valid: true, errorMessage: "", value: "" })
+    const [crianca, setCrianca] = useState({ valid: true, errorMessage: "", value: false })
 
+
+    let convidadosAdultos = props.itens.filter(convidado => !convidado.crianca.value)
+    let convidadosCriancas = props.itens.filter(convidado => convidado.crianca.value)
 
     useEffect(() => {
-        console.log('props trigger',props.stepTrigered);
-    }, [props, props.stepTrigered])
+    }, [props, props.stepTrigered, crianca])
 
     function toggleIsAddingItem(e) {
         e.preventDefault()
@@ -32,8 +34,8 @@ export default function FormList(props) {
 
         setNomeConvidado(item.nomeConvidado)
         setCpf(item.cpf)
+        setCrianca(item.crianca)
         setCelular(item.celular)
-        setEmail(item.email)
         setObservacoes(item.observacoes)
         setIsEditingItem(true);
         setIsAddingItem(true)
@@ -48,9 +50,10 @@ export default function FormList(props) {
 
         setNomeConvidado({ valid: false, errorMessage: "", value: "" })
         setCpf({ valid: false, errorMessage: "", value: "" })
-        setCelular({ valid: false, errorMessage: "", value: "" })
-        setEmail({ valid: false, errorMessage: "", value: "" })
-        setObservacoes({ valid: false, errorMessage: "", value: "" })
+        setCelular({ valid: true, errorMessage: "", value: "" })
+        setObservacoes({ valid: true, errorMessage: "", value: "" })
+        setCrianca({ valid: true, errorMessage: "", value: false })
+
     }
 
 
@@ -59,18 +62,39 @@ export default function FormList(props) {
         setStepTrigered(stepTrigered + 1)
         event.preventDefault()
 
-        let fields = { nomeConvidado, cpf, celular, email, observacoes }
+        let fields = { nomeConvidado, cpf, crianca, celular, observacoes }
 
         let valid = true
         Object.keys(fields).forEach(fieldName => {
             if (!fields[fieldName].valid) valid = false
         })
 
+        // console.log(convidadosCriancas.length, isEditingItem, crianca.value,convidadosCriancas.length === 2 && !isEditingItem && crianca.value);
+
+        if (((convidadosCriancas.length >= 2 && !isEditingItem) || (convidadosCriancas.length >=3 && isEditingItem)) && crianca.value) {
+            // console.log('deu ruim');
+            valid = false
+            // setCrianca({ valid: false, errorMessage: "Você já adicionou o limite de convidados com menos de 14 anos", value: 'aabc' })        
+            // setStepTrigered(stepTrigered + 2)
+            // props.setStepTrigered(props.stepTrigered + 1)
+        }
+
+        if (((convidadosAdultos.length >= 7 && !isEditingItem) || (convidadosAdultos.length >=8 && isEditingItem)) && crianca.value) {
+            // console.log('deu ruim');
+            valid = false
+            // setCrianca({ valid: false, errorMessage: "Você já adicionou o limite de convidados com menos de 14 anos", value: 'aabc' })        
+            // setStepTrigered(stepTrigered + 2)
+            // props.setStepTrigered(props.stepTrigered + 1)
+        }
+        
+
+
         if (valid) {
             let itens = [...props.itens, fields]
 
             if(isEditingItem){
                 itens = [...props.itens]
+
                 if(itens[editingItemId].id) {
                     let id = itens[editingItemId].id
                     fields = { ...fields, id}
@@ -83,25 +107,22 @@ export default function FormList(props) {
             setStepTrigered(0)
         }
 
-        props.setStepTrigered(props.stepTrigered + 1)
+        // props.setStepTrigered(props.stepTrigered + 1)
     }
 
-    console.log('alo');
 
     function submit(event) {
         event.preventDefault()
         props.setStepTrigered(props.stepTrigered + 1)
 
-        console.log(props.stepTrigered);
-
         let fields = { naoPossuiConvidados: props.naoPossuiConvidados }
 
         let valid = true
+        
         Object.keys(fields).forEach(fieldName => {
             if (!fields[fieldName].valid) valid = false
         })
 
-        console.log(valid, fields);
 
         if(valid){
             props.setStepTrigered(0)
@@ -132,9 +153,10 @@ export default function FormList(props) {
                     />
 
 
+
                     <div className={checkboxClassName()}>
                         <p className='form-list-counter'>
-                            {!props.naoPossuiConvidados.value? props.itens.length: 0} de 9 convidados adicionados
+                            {!props.naoPossuiConvidados.value? convidadosAdultos.length: 0} de 7 adultos e {!props.naoPossuiConvidados.value? convidadosCriancas.length: 0} de 2 crianças adicionados
                         </p>
 
 
@@ -172,11 +194,18 @@ export default function FormList(props) {
             {isAddingItem && <form>
 
                 <FormInput name='Nome do Locatário' setValue={setNomeConvidado} defaultValue={nomeConvidado} trigger={stepTrigered} />
+                <FormInput
+                    name='Convidado menor de 14 anos'
+                    type='checkbox'
+                    optional
+                    showOptional
+                    trigger={stepTrigered}
+                    setValue={setCrianca}
+                    defaultValue={crianca}
+                />
                 <FormInput setValue={setCpf} name='CPF' placeholder='Ex: 000.000.000-00' validation={'required|cpf'} defaultValue={cpf} trigger={stepTrigered} />
-                <FormInput name='Celular' type='tel' setValue={setCelular} placeholder='Ex: 00 00000-0000' validation={'telefone'} defaultValue={celular} trigger={stepTrigered} />
-                <FormInput name='E-mail' type='email' setValue={setEmail} validation={'email'} defaultValue={email} trigger={stepTrigered} />
+                <FormInput name='Celular' optional showOptional type='tel' setValue={setCelular} placeholder='Ex: 00 00000-0000' validation={'telefone'} defaultValue={celular} trigger={stepTrigered} />
                 <FormInput name='Observações' type='textarea' setValue={setObservacoes} optional showOptional defaultValue={observacoes} trigger={stepTrigered} />
-
 
                 <div className='form-controls'>
                     <button className='btn-secondary' onClick={cancelItem}>Cancelar</button>

@@ -5,6 +5,7 @@ const home = React.lazy(() => import('./views/public/Home'));
 const Unauthorized = React.lazy(() => import('./views/public/Unauthorized/Unauthorized'));
 const NotAllowed = React.lazy(() => import('./views/public/NotAllowed/NotAllowed'));
 const login = React.lazy(() => import('./views/public/Login/Login'));
+const Register = React.lazy(() => import('./views/public/Register/Register'));
 
 
 const dashboard = React.lazy(() => import('./views/Dashboard/Dashboard'));
@@ -151,8 +152,10 @@ export const routes = [
 
 export const publicRoutes = [
     {path: '/login', exact: true, component: login},
+    {path: '/criar-conta', exact: true, component: Register},
     {path: '/nao-autorizado', exact: true, component: Unauthorized},
     {path: '/nao-permitido', exact: true, component: NotAllowed},
     {path: '/404', exact: true, component: NotFound},
     {path: '/', exact: true, component: home},
 ];
+

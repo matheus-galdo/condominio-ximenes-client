@@ -90,7 +90,7 @@ export default function Teste(props) {
                             </div>
 
                             <div className='form-group'>
-                                <p className="register">Não tem uma conta? <Link to='/teste'>Cadastre-se</Link></p>
+                                <p className="register">Não tem uma conta? <Link to='/criar-conta'>Cadastre-se</Link></p>
                             </div>
 
                         </form>

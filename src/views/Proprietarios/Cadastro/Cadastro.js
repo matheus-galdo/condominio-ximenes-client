@@ -13,7 +13,7 @@ export default function Cadastro(props) {
     const [passwordConfirmation, setPasswordConfirmation] = useState({ valid: false, errorMessage: "", value: "" })
     const [userType, setUserType] = useState({ valid: false, errorMessage: "", value: "" })
     const [apartamento, setApartamento] = useState({ valid: false, errorMessage: "", value: "" })
-    const [celular, setCelular] = useState({ valid: false, errorMessage: "", value: "" })
+    const [celular, setCelular] = useState({ valid: true, errorMessage: "", value: "" })
 
 
 

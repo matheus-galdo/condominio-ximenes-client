@@ -61,9 +61,11 @@ export default function Detalhes(props) {
                     <div className='square-list__item'>
                         <div className='square-list__item-content'>
                             <p>
-                                <span>Nenhum proprietário encontrado</span>
+                                <span>
+                                    Apartamento solicitado:
+                                </span>
+                                {usuario.apartamento_solicitado ? `${usuario.apartamento_solicitado}` : 'Nenhum apartamento encontrado'}
                             </p>
-
                         </div>
                     </div>}
             </div>
