@@ -48,9 +48,9 @@ export default function Detalhes(props) {
             <h3>Detalhes</h3>
             <p>
                 <span className='bold'>Código de barras: </span>{boleto.codigo_barras}
-                <ClipboardBtn value={boleto.codigo_barras}/>
+                <ClipboardBtn value={boleto.codigo_barras} />
             </p>
-            
+
             <p><span className='bold'>Valor: </span> {numberFormat(boleto.valor, 'real')}</p>
             <p><span className='bold'>Vencimento: </span> {moment(boleto.vencimento).format('L')}</p>
             {boleto.deleted_at && <p><span className='bold'>Desativado em: </span> {moment(boleto.deleted_at).format('L')}</p>}
@@ -60,24 +60,40 @@ export default function Detalhes(props) {
             {boleto.pago && <p><span className='bold'>Data do pagamento: </span> {moment(boleto.data_pagamento).format('L')}</p>}
 
             <h3>Cadastro</h3>
-            <p><span className='bold'>Cadastrado por: </span> {boleto.cadastrado_por.name}</p>
+            {permissao.gerenciar && boleto.cadastrado_por && <p><span className='bold'>Cadastrado por: </span> {boleto.cadastrado_por.name}</p>}
             <p><span className='bold'>Data do cadastro: </span> {moment(boleto.created_at).format('L')}</p>
 
             <h3>Apartamento</h3>
-            <div className='square-list__item-clickable'>
-                <Link className='square-list__item-content' to={`/apartamentos/${boleto.apartamento.id}`}>
-                    <span className='square-list__number-block'>{1}</span>
-                    <p>
-                        Apartamento {boleto.apartamento.numero}<br />
-                        <span>Bloco: {boleto.apartamento.bloco}</span><br />
-                        <span>{boleto.apartamento.andar}° andar</span>
-                    </p>
+            {permissao.gerenciar ?
 
+                <div className='square-list__item-clickable'>
+                    <Link className='square-list__item-content' to={`/apartamentos/${boleto.apartamento.id}`}>
+                        <span className='square-list__number-block'>{1}</span>
+                        <p>
+                            Apartamento {boleto.apartamento.numero}<br />
+                            <span>Bloco: {boleto.apartamento.bloco}</span><br />
+                            <span>{boleto.apartamento.andar}° andar</span>
+                        </p>
+
+                    </Link>
+                    <Link to={`/apartamentos/${boleto.apartamento.id}`} className='square-list__item-details-button'>
+                        Ver apartamento
                 </Link>
-                <Link to={`/apartamentos/${boleto.apartamento.id}`} className='square-list__item-details-button'>
-                    Ver apartamento
-                </Link>
-            </div>
+
+                </div>
+                :
+                <div className='square-list__item-clickable'>
+                    <div className='square-list__item-content'>
+                        <span className='square-list__number-block'>{1}</span>
+                        <p>
+                            Apartamento {boleto.apartamento.numero}<br />
+                            <span>Bloco: {boleto.apartamento.bloco}</span><br />
+                            <span>{boleto.apartamento.andar}° andar</span>
+                        </p>
+
+                    </div>
+                </div>
+            }
         </>}
     </div>
 }

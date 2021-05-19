@@ -9,6 +9,7 @@ import usePermissao from '../../../Hooks/usePermissao';
 export default function Followup(props) {
 
     const [ocorrencia, setOcorrencia] = useState(null)
+    const [lastFollowup, setLastFollowup] = useState(null)
     const [eventos, setEventos] = useState(null)
 
     const [evento, setEvento] = useState({ valid: true, errorMessage: "", value: 2 })
@@ -34,6 +35,9 @@ export default function Followup(props) {
                 if (mounted) {
                     setHasLoaded(true)
                     setOcorrencia(response.data)
+
+                    let followupAtivos = response.data.followup.filter(followup => !followup.deleted_at)
+                    setLastFollowup(followupAtivos[followupAtivos.length - 1])
                 }
             }).catch(error => history.push('/ocorrencias'))
         }
@@ -46,9 +50,9 @@ export default function Followup(props) {
         let mounted = true
 
         if (hasLoaded && ocorrencia && idfollowup && !hasRequestedFollowup) {
-            if(mounted){
+            if (mounted) {
                 setHasRequestedFollowup(true)
-                let followupItem = ocorrencia.followup.filter(followupItem => {return followupItem.id === parseInt(idfollowup)})
+                let followupItem = ocorrencia.followup.filter(followupItem => { return followupItem.id === parseInt(idfollowup) })
                 if (followupItem.length === 0) {
                     history.push('/ocorrencias')
                     return
@@ -65,20 +69,33 @@ export default function Followup(props) {
     useEffect(() => {
         let mounted = true
 
-        if (!hasRequestedEventos) {
+        if (!hasRequestedEventos && lastFollowup) {
             api().get('listar-eventos-ocorrencia').then(response => {
                 if (mounted) {
                     setHasRequestedEventos(true)
-                    setEventos(response.data.map(evento => {
-                        return { value: evento.id, label: evento.nome }
-                    }))
+
+                    let finalEventos = ['Concluída', 'Cancelada'];
+                    let availableEventos = []
+                    if (finalEventos.includes(lastFollowup.evento.nome)) {
+                        response.data.forEach(evento => {
+                            if (evento.nome === 'Reaberta') availableEventos.push({ value: evento.id, label: evento.nome })
+                        })
+                    } else {
+                        response.data.forEach(evento => {
+                            if (evento.nome !== 'Reaberta') availableEventos.push({ value: evento.id, label: evento.nome })
+
+                        })
+                    }
+
+                    setEventos(availableEventos)
                 }
             })
         }
 
         return () => mounted = false
-    }, [hasRequestedEventos])
+    }, [hasRequestedEventos, lastFollowup])
 
+    console.log(eventos);
 
     function submit(e) {
         e.preventDefault()
@@ -124,11 +141,11 @@ export default function Followup(props) {
 
             if (idfollowup) {
                 formData.ocorrencia = id;
-            }else{
+            } else {
                 formData.append('ocorrencia', id);
             }
 
-            let route = (idfollowup)?`ocorrencias-followup/${idfollowup}`:`ocorrencias-followup`
+            let route = (idfollowup) ? `ocorrencias-followup/${idfollowup}` : `ocorrencias-followup`
 
             api()[httpVerb](route, formData).then(response => history.push('/ocorrencias'))
                 .catch(error => setHasPosted(false))
@@ -147,41 +164,42 @@ export default function Followup(props) {
 
 
         {eventos && ocorrencia && <form>
-            <FormInput
-                type='reactSelect'
-                name='Evento do follow-up'
-                selectConfig={{ options: eventos }}
-                validation={'required'}
-                defaultValue={evento}
-                setValue={setEvento}
-                trigger={stepTrigered}
-            />
+            <div className='inputs-container'>
+                {!idfollowup && <FormInput
+                    type='reactSelect'
+                    name='Evento do follow-up'
+                    selectConfig={{ options: eventos }}
+                    validation={'required'}
+                    defaultValue={evento}
+                    setValue={setEvento}
+                    trigger={stepTrigered}
+                />}
 
 
-            <FormInput
-                type='textarea'
-                name='Descrição do evento'
-                validation='required'
-                defaultValue={descricao}
-                setValue={setDescricao}
-                trigger={stepTrigered}
-            />
+                <FormInput
+                    type='textarea'
+                    name='Descrição do evento'
+                    validation='required'
+                    defaultValue={descricao}
+                    setValue={setDescricao}
+                    trigger={stepTrigered}
+                />
 
-            {!idfollowup && <FormInput
-                type='dropzone'
-                name='Anexos'
-                multiple
-                accept={`video/*, audio/*, image/*, ${mimeTypes.pdf}, ${mimeTypes.xls}, ${mimeTypes.xlsx}, ${mimeTypes.doc}, ${mimeTypes.docx}`}
-                defaultValue={arquivos}
-                optional
-                showOptional
-                setValue={setArquivos}
-                trigger={stepTrigered}
-            />}
-
-
+                {!idfollowup && <FormInput
+                    type='dropzone'
+                    name='Anexos'
+                    multiple
+                    accept={`video/*, audio/*, image/*, ${mimeTypes.pdf}, ${mimeTypes.xls}, ${mimeTypes.xlsx}, ${mimeTypes.doc}, ${mimeTypes.docx}`}
+                    defaultValue={arquivos}
+                    optional
+                    showOptional
+                    setValue={setArquivos}
+                    trigger={stepTrigered}
+                />}
 
 
+
+            </div>
             <div className='form-controls'>
                 <button className='btn-secondary' onClick={() => history.push('/ocorrencias')}>Cancelar</button>
                 <button className='btn-primary' onClick={submit}>Concluir</button>

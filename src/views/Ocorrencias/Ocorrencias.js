@@ -10,6 +10,13 @@ import './Ocorrencias.scss';
 
 export default function Ocorrencias(props) {
 
+    const [finalEventos, setFinalEvents] = useState(['Concluída', 'Cancelada'])
+    const [eventoConcluida, setEventoConcluida] = useState(null)
+    const [eventoCancelada, setEventoCancelada] = useState(null)
+    const [eventoReaberta, setEventoReaberta] = useState(null)
+    const [hasRequestedEventos, setHasRequestedEventos] = useState(false)
+
+
     const [ocorrenciasOriginal, setOcorrenciasOriginal] = useState([])
     const [ocorrencias, setOcorrencias] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
@@ -23,6 +30,7 @@ export default function Ocorrencias(props) {
         if (!hasLoaded) {
             api().get('ocorrencias').then(response => {
                 if (mounted) {
+                    setHasLoaded(true)
                     setOcorrencias(response.data)
                     setOcorrenciasOriginal(response.data)
                 }
@@ -31,6 +39,24 @@ export default function Ocorrencias(props) {
 
         return () => mounted = false
     }, [])
+
+
+    useEffect(() => {
+        let mounted = true
+
+        if (!hasRequestedEventos) {
+            api().get('listar-eventos-ocorrencia').then(response => {
+                if (mounted) {
+                    setHasRequestedEventos(true)
+                    setEventoConcluida(response.data.find(evento => evento.nome === 'Concluída'))
+                    setEventoCancelada(response.data.find(evento => evento.nome === 'Cancelada'))
+                    setEventoReaberta(response.data.find(evento => evento.nome === 'Reaberta'))
+                }
+            })
+        }
+
+        return () => mounted = false
+    }, [hasRequestedEventos])
 
 
     function filter(e) {
@@ -52,23 +78,29 @@ export default function Ocorrencias(props) {
 
     function getItenOptions(item, moduloName, reload) {
 
+        console.log(item);
+
         let options = []
+        let lastFollowup = item.followup[item.followup.length - 1].evento
 
-        if (item.concluida) {
-            if (item.deleted_at) options.push({ name: 'Ativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: true }).then(response => reload(false)) })
-            if (!item.deleted_at) options.push({ name: 'Desativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: false }).then(response => reload(false)) })
-            if (permissao.excluir && item.deleted_at) options.push({ name: 'Excluir', f: () => api().delete(`${moduloName}/${item.id}`).then(response => reload(false)) })
-            options.push({ name: 'Reabrir', f: () => api().put(`${moduloName}/${item.id}`, { encerrar: false }).then(response => reload(false)) })
-        }
+        if (item.deleted_at) options.push({ name: 'Ativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: true }).then(response => reload(false)) })
+        if (!item.deleted_at) options.push({ name: 'Desativar', f: () => api().put(`${moduloName}/${item.id}`, { ativar: false }).then(response => reload(false)) })
+        if (permissao.excluir && item.deleted_at) options.push({ name: 'Excluir', f: () => api().delete(`${moduloName}/${item.id}`).then(response => reload(false)) })
 
-        if (!item.concluida) {
-            if (permissao.editar) options.push({ name: 'Adicionar follow-up', f: () => history.push(`/ocorrencias-followup/${item.id}`) })
-            options.push({ name: 'Encerrar', f: () => api().put(`${moduloName}/${item.id}`, { encerrar: true }).then(response => reload(false)) })
+
+        if (finalEventos.includes(lastFollowup.nome)) {
+            let formData = { descricao: 'Ocorrência reaberta.', arquivos: [], evento: eventoReaberta.id, ocorrencia: item.id }
+            options.push({ name: 'Reabrir', f: () => api().post(`ocorrencias-followup`, formData).then(response => reload(false)) })
+        } else {
+            let formDataConcluir = { descricao: 'Ocorrência encerrada.', arquivos: [], evento: eventoConcluida.id, ocorrencia: item.id }
+            let formDataCancelar = { descricao: 'Ocorrência cancelada.', arquivos: [], evento: eventoCancelada.id, ocorrencia: item.id }
+
+            options.push({ name: 'Encerrar', f: () => api().post(`ocorrencias-followup`, formDataConcluir).then(response => reload(false)) })
+            options.push({ name: 'Cancelar', f: () => api().post(`ocorrencias-followup`, formDataCancelar).then(response => reload(false)) })
         }
 
         return options
     }
-
 
     return <div className='module-wrapper'>
 
@@ -84,27 +116,28 @@ export default function Ocorrencias(props) {
             </Link>}
         </div>
 
+        {hasRequestedEventos && hasLoaded && eventoReaberta &&
+            <div className='list-item-container'>
 
-        <div className='list-item-container'>
+                {ocorrencias.map((ocorrencia, id) => {
 
-            {ocorrencias.map((ocorrencia, id) => {
+                    let options = getItenOptions(ocorrencia, 'ocorrencias', setHasLoaded)
 
-                let options = getItenOptions(ocorrencia, 'ocorrencias', setHasLoaded)
+                    return <div key={id} className='list-item-card'>
+                        <div className='list-item-card-content'>
+                            <Link to={`/ocorrencias/${ocorrencia.id}`}>
+                                <h1>{ocorrencia.assunto}</h1>
+                                <p>Apartamento: {ocorrencia.apartamento.numero} {ocorrencia.apartamento.bloco}</p>
+                                <p>Status: {ocorrencia.deleted_at ? 'Desativada' : ocorrencia.followup[ocorrencia.followup.length - 1].evento.nome}</p>
+                            </Link>
+                        </div>
 
-                return <div key={id} className='list-item-card'>
-                    <div className='list-item-card-content'>
-                        <Link to={`/ocorrencias/${ocorrencia.id}`}>
-                            <h1>{ocorrencia.assunto}</h1>
-                            <p>Apartamento: {ocorrencia.apartamento.numero} {ocorrencia.apartamento.bloco}</p>
-                            <p>Status: {ocorrencia.concluida? 'Encerrada': ocorrencia.followup[ocorrencia.followup.length - 1].evento.nome}</p>
-                        </Link>
+                        {permissao.gerenciar && <OptionsBtn options={options} />}
                     </div>
+                })}
+            </div>
 
-                    {permissao.gerenciar && <OptionsBtn options={options} />}
-                </div>
-            })}
-        </div>
-
+        }
     </div>
 }
 

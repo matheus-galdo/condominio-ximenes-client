@@ -139,7 +139,7 @@ export default function Detalhes(props) {
                                 </p>
                             </div>
 
-                            {permissao.gerenciar && <OptionsBtn horizontal options={options} />}
+                            {permissao.gerenciar && <OptionsBtn options={options} />}
 
                         </header>
                         
