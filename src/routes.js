@@ -20,6 +20,7 @@ const AutorizacaoEntrada_Detalhes = React.lazy(() => import('./views/Autorizacao
 const Ocorrencias = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
 const Ocorrencias_Cadastro = React.lazy(() => import('./views/Ocorrencias/Cadastro/Cadastro'));
 const Ocorrencias_Detalhes = React.lazy(() => import('./views/Ocorrencias/Detalhes/Detalhes'));
+const Ocorrencias_Followup = React.lazy(() => import('./views/Ocorrencias/FollowUp/Followup'));
 
 
 const FaleComSindica = React.lazy(() => import('./views/ChatSindica/ChatSindica'));
@@ -86,8 +87,10 @@ export const routes = [
     {path: '/ocorrencias/cadastro/:id', exact: true, component: Ocorrencias_Cadastro},
     {path: '/ocorrencias', exact: true, component: Ocorrencias},
     {path: '/ocorrencias/:id', exact: true, component: Ocorrencias_Detalhes},
+    {path: '/ocorrencias-followup/:id', exact: true, component: Ocorrencias_Followup},
+    {path: '/ocorrencias-followup/:id/:idfollowup', exact: true, component: Ocorrencias_Followup},
 
-
+    
 
     {path: '/fale-com-a-sindica', exact: true, component: FaleComSindica},
     {path: '/fale-com-a-sindica/chat', exact: true, component: FaleComSindica_Chat},

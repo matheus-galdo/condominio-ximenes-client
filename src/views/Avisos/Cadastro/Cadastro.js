@@ -2,15 +2,15 @@ import { useEffect, useState } from 'react';
 import { useHistory, useParams } from 'react-router';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
-import './Cadastro.scss';
 
 export default function Cadastro(props) {
 
     const [titulo, setTitulo] = useState({ valid: false, errorMessage: "", value: "" })
     const [descricao, setDescricao] = useState({ valid: false, errorMessage: "", value: "" })
-    const [dataExpiracao, setDataExpiracao] = useState({ valid: false, errorMessage: "", value: "" })
+    const [dataExpiracao, setDataExpiracao] = useState({ valid: true, errorMessage: "", value: "" })
     const [stepTrigered, setStepTrigered] = useState(0)
     const [hasLoaded, setHasLoaded] = useState(false)
+    const [hasSubmited, setHasSubmited] = useState(false)
 
 
     const history = useHistory();
@@ -47,16 +47,19 @@ export default function Cadastro(props) {
             formData[fieldName] = fields[fieldName].value
         })
 
-        console.log(valid, formData, fields);
-
-        if(valid){
+        if(valid && !hasSubmited){
             setStepTrigered(0)
+            setHasSubmited(true)
 
-            api().post('avisos', formData).then(response => console.log(response.data))
+            let httpVerb = id? 'patch' : 'post'
+            let route = id? `avisos/${id}` : 'avisos'
+
+            api()[httpVerb](route, formData).then(response => history.push('/avisos'))
+            .catch(error => setHasSubmited(false))
         }
     }
 
-    return <div>
+    return <div className='form-wrapper'>
         <form>
             <FormInput
                 type='text'

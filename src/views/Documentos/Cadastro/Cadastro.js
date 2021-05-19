@@ -78,8 +78,6 @@ export default function Cadastro(props) {
         }
 
 
-        console.log(formData);
-
         if (valid) {
             setStepTrigered(0)
 

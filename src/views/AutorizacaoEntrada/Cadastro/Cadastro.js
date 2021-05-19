@@ -217,8 +217,8 @@ export default function CadastroLocatario(props) {
 
 
             <div className='form-steps-container'>
-                <h1>Dados do locatário</h1>
-                <p>Informe os dados do locatário para que a portaria possa liberar o seu acesso</p>
+                <h1>Dados do ocorrência</h1>
+                <p>Descreva a ocorrência em detalhes e adicione arquivos.</p>
                 <FormSteps>
                     <FormStep current={currentStep} onClick={setCurrentStep}>Dados do locatário</FormStep>
                     <FormStep current={currentStep} onClick={setCurrentStep}>Veículo do locatário</FormStep>

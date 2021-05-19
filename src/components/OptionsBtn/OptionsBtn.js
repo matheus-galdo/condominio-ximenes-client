@@ -1,7 +1,7 @@
 import './OptionsBtn.scss';
 import useOuterClick from "../../Hooks/useOuterClick";
 
-import { HiOutlineDotsVertical } from "react-icons/hi";
+import { HiOutlineDotsVertical, HiOutlineDotsHorizontal } from "react-icons/hi";
 import { useEffect, useState } from 'react';
 
 export default function OptionsBtn(props) {
@@ -29,7 +29,7 @@ export default function OptionsBtn(props) {
     return (
         <div ref={innerRef} className='options-btn-container'>
             <button className='options' onClick={showList}>
-                <HiOutlineDotsVertical/>
+                {props.horizontal ? <HiOutlineDotsHorizontal/> : <HiOutlineDotsVertical/>}
             </button>
 
 

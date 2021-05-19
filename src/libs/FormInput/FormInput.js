@@ -113,8 +113,15 @@ export default function FormInput(props) {
 
         let handler = { value: files, valid: true, errorMessage: '' }
 
-        if (typeof files !== 'object' || !('acceptedFiles' in files)) {
-            handler = { value: files, valid: false, errorMessage: 'Este campo é obrigatório' }
+
+        if ((typeof files !== 'object' || !('acceptedFiles' in files))) {
+            handler = { value: files, valid: true, errorMessage: ''}
+
+            if (getValidationRules().indexOf('required') >= 0) {
+                handler.valid = false
+                handler.errorMessage = 'Este campo é obrigatório'
+            }
+            
             props.setValue(handler)
             setValue(handler)
             return
@@ -131,6 +138,7 @@ export default function FormInput(props) {
         files.acceptedFiles = (files.acceptedFiles.map(file => Object.assign(file, {
             preview: URL.createObjectURL(file)
         })));
+
 
 
         let validator = FormValidator(files.acceptedFiles, getValidationRules(), props.itens, props.type)

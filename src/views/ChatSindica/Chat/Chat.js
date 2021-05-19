@@ -6,6 +6,7 @@ import { IoMdSend } from 'react-icons/io';
 import imgMessage from '../../.././/assets/img/mail-notification-2557119-2139454.png'
 import './Chat.scss'
 import ReactTooltip from 'react-tooltip';
+import { dateFormater } from '../../../assets/Helpers/helpers';
 
 export default function Chat(props) {
 
@@ -81,14 +82,14 @@ export default function Chat(props) {
         <div className={'message-container'}>
             {props.contato && mensagens.length > 0 &&
                 <>
-                    {mensagens.map(mensagem => <>
-                        <div className={'message-card-wrapper' + getMessageCardClass(mensagem)}>
+                    {mensagens.map((mensagem, key) => <>
+                        <div key={key} className={'message-card-wrapper' + getMessageCardClass(mensagem)}>
 
                             <div className={'message-card' + getMessageCardClass(mensagem)}>
                                 {mensagem.mensagem}
 
                                 <span className='author-message'>
-                                    {getAuthorName(mensagem)} - <span title={moment(mensagem.created_at).format('LLL')}>{moment(mensagem.created_at).format('HH:MM')}</span>
+                                    {getAuthorName(mensagem)} - <span title={moment(mensagem.created_at).format('LLL')}>{dateFormater(mensagem.created_at)}</span>
                                 </span>
                             </div>
                         </div>
