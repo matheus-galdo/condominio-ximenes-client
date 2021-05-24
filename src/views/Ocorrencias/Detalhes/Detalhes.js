@@ -58,7 +58,7 @@ export default function Detalhes(props) {
         }
 
         return () => mounted = false
-    }, [hasLoaded])
+    }, [hasLoaded, id])
 
 
 

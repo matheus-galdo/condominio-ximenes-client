@@ -13,7 +13,6 @@ export default function Proprietarios(props) {
     const [proprietariosOriginal, setProprietariosOriginal] = useState(null)
     const [proprietarios, setProprietarios] = useState(null)
     const [hasLoaded, setHasLoaded] = useState(false)
-    const [hasLoadedPages, setHasLoadedPages] = useState(false)
     
     const history = useHistory();
     const { permissao } = usePermissao('proprietarios')
@@ -23,7 +22,7 @@ export default function Proprietarios(props) {
     const [page, setPage] = useState(1)
     const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
 
-    const [filterOptions, setFilterOptions] = useState([
+    const [filterOptions] = useState([
         { nome: 'Aguardando aprovação', f:() =>  {setOrderBy('nao_aprovados'); setHasLoaded(false)} },
         { nome: 'Aprovados', f:() =>  {setOrderBy('aprovados'); setHasLoaded(false)} },
         { nome: 'Cadastro mais recente', f:() =>  {setOrderBy('data_cadastro_recentes'); setHasLoaded(false)} },
@@ -52,7 +51,7 @@ export default function Proprietarios(props) {
             })
         }
         return () => mounted = false
-    }, [hasLoaded, proprietarios, page])
+    }, [hasLoaded, proprietarios, page, orderBy])
 
     function changePage(value) {
         setHasLoaded(false)

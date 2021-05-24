@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {BiLogOutCircle} from 'react-icons/bi';
 import { AuthContext } from "../../Context/AuthProvider";
 import useOuterClick from "../../Hooks/useOuterClick";
@@ -11,7 +11,6 @@ export default function AccountMenu(props) {
     const [show, setShow] = useState(false);
     const { setAuth } = useContext(AuthContext)
     const { setUser } = useContext(UserContext)
-    const history = useHistory();
 
     const innerRef = useOuterClick(ev => props.closeMenu());
 

@@ -6,13 +6,12 @@ import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 import './Documentos.scss';
-import './Contas.scss';
-import moment from 'moment';
 
 
 function downloadFile(e, documento) {
     e.preventDefault()
-    api(false, 'blob').get(`download-file?file=${documento.id}&module=contas`).then(response => {
+    api(false, 'blob').get(`download-file?file=${documento.id}&module=documento`).then(response => {
+        console.log(response);
 
         let filename = 'file.txt'
         try {
@@ -30,29 +29,24 @@ function downloadFile(e, documento) {
     })
 }
 
-export default function Contas(props) {
+export default function Documentos(props) {
 
-    const [contasOriginal, setContasOriginal] = useState([])
-    const [contas, setContas] = useState([])
+    const [documentosOriginal, setDocumentosOriginal] = useState([])
+    const [documentos, setDocumentos] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
-    const { permissao } = usePermissao('prestacao-contas')
-
-
-    useEffect(() => {
-        document.title = "Prestação de contas"
-    }, []);
+    const { permissao } = usePermissao('documentos')
 
 
     useEffect(() => {
         let mounted = true;
 
-        if (!hasLoaded && contasOriginal.length === 0) {
-            api().get('prestacao-contas').then(response => {
+        if (!hasLoaded && documentosOriginal.length === 0) {
+            api().get('documentos').then(response => {
                 if (mounted) {
-                    setContasOriginal(response.data)
-                    setContas(response.data)
+                    setDocumentosOriginal(response.data)
+                    setDocumentos(response.data)
                     setHasLoaded(true)
                 }
             })
@@ -61,23 +55,23 @@ export default function Contas(props) {
         return () => {
             mounted = false
         }
-    }, [contas, hasLoaded, contasOriginal])
+    }, [documentos, hasLoaded, documentosOriginal])
 
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
 
         if (value === '') {
-            setContas(contasOriginal);
+            setDocumentos(documentosOriginal);
             return
         }
 
-        let filtered = contasOriginal.filter(documento =>
+        let filtered = documentosOriginal.filter(documento =>
             (documento.nome.toLowerCase().indexOf(value) >= 0) ||
             (documento.nome_original.toLowerCase().indexOf(value) >= 0)
         )
 
-        setContas(filtered);
+        setDocumentos(filtered);
     }
 
 
@@ -106,12 +100,12 @@ export default function Contas(props) {
         <BackBtn />
         {permissao.modulo && !permissao.acessar && <Redirect to='/nao-permitido' />}
 
-        <h1>Prestação de contas</h1>
+        <h1>Documentos</h1>
 
         <div className='top-module-bar'>
             <SearchBar filter={filter} />
 
-            {permissao.criar && <Link to='/contas/cadastro/' className='btn-primary'>
+            {permissao.criar && <Link to='/documentos/cadastro/' className='btn-primary'>
                 + Adicionar
             </Link>}
         </div>
@@ -119,34 +113,34 @@ export default function Contas(props) {
 
         <div className='list-item-container'>
 
-            {contas.map((conta, id) => {
+            {documentos.map((documento, id) => {
 
-                let options = getItenOptions(conta, 'contas', setHasLoaded)
+                let options = getItenOptions(documento, 'documentos', setHasLoaded)
 
                 return <div key={id} className='list-item-card'>
-                    <Link to={`/contas/${conta.id}`}>
+                    <Link to={`/documentos/${documento.id}`}>
 
                         <span className='file-icon'>
-                            {conta.extensao}
+                            {documento.extensao}
                         </span>
                     </Link>
 
                     <div className='list-item-card-content'>
                         {permissao.visualizar ?
-                            <Link to={`/contas/${conta.id}`}>
-                                <h1>Detalhamento de {moment(conta.periodo).format('MMMM YYYY')}</h1>
-                                <p>Arquivo: {conta.nome}</p>
-                                <p>Status: {conta.deleted_at ? 'Desativado' : 'Ativado'}</p>
+                            <Link to={`/documentos/${documento.id}`}>
+                                <h1>{documento.nome}</h1>
+                                <p>Status: {documento.deleted_at ? 'Desativado' : 'Ativado'}</p>
+
                             </Link>
                             :
                             <>
-                                <h1>Detalhamento de {moment(conta.periodo).format('MMMM YYYY')}</h1>
-                                <p>Arquivo: {conta.nome}</p>
+                                <h1>{documento.nome}</h1>
+                                <p>Status: {documento.deleted_at ? 'Desativado' : 'Ativado'}</p>
                             </>
                         }
                     </div>
 
-                    <button onClick={e => downloadFile(e, conta)} className='btn-primary small-btn'>
+                    <button onClick={e => downloadFile(e, documento)} className='btn-primary small-btn'>
                         Download
                     </button>
 

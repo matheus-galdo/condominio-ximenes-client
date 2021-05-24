@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { useEffect, useState } from 'react';
-import { Link, Redirect, useHistory } from 'react-router-dom';
+import { Link, Redirect } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
@@ -10,7 +10,7 @@ import './Ocorrencias.scss';
 
 export default function Ocorrencias(props) {
 
-    const [finalEventos, setFinalEvents] = useState(['Concluída', 'Cancelada'])
+    const [finalEventos] = useState(['Concluída', 'Cancelada'])
     const [eventoConcluida, setEventoConcluida] = useState(null)
     const [eventoCancelada, setEventoCancelada] = useState(null)
     const [eventoReaberta, setEventoReaberta] = useState(null)
@@ -21,7 +21,6 @@ export default function Ocorrencias(props) {
     const [ocorrencias, setOcorrencias] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
-    const history = useHistory();
     const { permissao } = usePermissao('ocorrencias')
 
 
@@ -38,7 +37,7 @@ export default function Ocorrencias(props) {
         }
 
         return () => mounted = false
-    }, [])
+    }, [hasLoaded])
 
 
     useEffect(() => {

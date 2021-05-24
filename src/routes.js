@@ -35,7 +35,8 @@ const Documentos_Detalhes = React.lazy(() => import('./views/Documentos/Detalhes
 
 
 const Contas = React.lazy(() => import('./views/Contas/Contas'));
-const Contas_Cadastro = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
+const Contas_Cadastro = React.lazy(() => import('./views/Contas/Cadastro/Cadastro'));
+const Contas_Detalhes = React.lazy(() => import('./views/Contas/Detalhes/Detalhes'));
 
 
 const Boletos = React.lazy(() => import('./views/Boletos/Boletos'));
@@ -65,10 +66,13 @@ const Avisos_Cadastro = React.lazy(() => import('./views/Avisos/Cadastro/Cadastr
 const Avisos_Detalhes = React.lazy(() => import('./views/Avisos/Detalhes/Detalhes'));
 
 const Contatos = React.lazy(() => import('./views/Contatos/Contatos'));
+const Contatos_Cadastro = React.lazy(() => import('./views/Contatos/CadastrarContatos'));
+
 const RegrasNormas = React.lazy(() => import('./views/RegrasNormas/RegrasNormas'));
 const RegrasNormas_Cadastro = React.lazy(() => import('./views/RegrasNormas/CadastrarRegrasNormas'));
 
-const HorarioFuncionamento = React.lazy(() => import('./views/Funcionamento/Funcionamento'));
+const HorarioFuncionamento = React.lazy(() => import('./views/HorarioFuncionamento/HorarioFuncionamento'));
+const HorarioFuncionamento_Cadastro = React.lazy(() => import('./views/HorarioFuncionamento/CadastrarHorarioFuncionamento'));
 
 
 
@@ -108,8 +112,10 @@ export const routes = [
 
 
 
+    {path: '/contas/cadastro/:id', exact: true, component: Contas_Cadastro},
     {path: '/contas/cadastro', exact: true, component: Contas_Cadastro},
     {path: '/contas', exact: true, component: Contas},
+    {path: '/contas/:id', exact: true, component: Contas},
 
 
     {path: '/boletos/cadastro/:id', exact: true, component: Boletos_Cadastro},
@@ -150,12 +156,13 @@ export const routes = [
 
 
     {path: '/contatos', exact: true, component: Contatos},
+    {path: '/contatos/cadastro', exact: true, component: Contatos_Cadastro},
 
     {path: '/regras-e-normas', exact: true, component: RegrasNormas},
     {path: '/regras-e-normas/cadastro', exact: true, component: RegrasNormas_Cadastro},
-    {path: '/regras-e-normas/cadastro/:id', exact: true, component: RegrasNormas_Cadastro},
 
     {path: '/horario-de-funcionamento', exact: true, component: HorarioFuncionamento},
+    {path: '/horario-de-funcionamento/cadastro', exact: true, component: HorarioFuncionamento_Cadastro},    
 ]
 
 

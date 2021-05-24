@@ -22,6 +22,7 @@ export default function Avisos(props) {
         if (!hasLoaded) {
             api().get('avisos').then(response => {
                 if (mounted) {
+                    setHasLoaded(true)
                     setAvisos(response.data)
                     setAvisosOriginal(response.data)
                 }
@@ -29,7 +30,7 @@ export default function Avisos(props) {
         }
 
         return () => mounted = false
-    }, [])
+    }, [hasLoaded])
 
 
     function filter(e) {
@@ -66,8 +67,6 @@ export default function Avisos(props) {
 
         return options
     }
-
-    console.log('aaa');
 
 
     return <div className='module-wrapper'>

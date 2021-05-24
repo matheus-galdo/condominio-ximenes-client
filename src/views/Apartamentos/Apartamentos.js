@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
-import Pagination from '../../components/Pagination/Pagination';
+// import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';

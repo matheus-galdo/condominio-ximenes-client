@@ -65,7 +65,7 @@ export default function Chat(props) {
     }
 
     function getMessageCardClass(mensagem) {
-        return (mensagem.mensagem_admin && props.user.typeName.is_admin) || !mensagem.mensagem_admin && !props.user.typeName.is_admin ? ' my-message' : ''
+        return (mensagem.mensagem_admin && props.user.typeName.is_admin) || (!mensagem.mensagem_admin && !props.user.typeName.is_admin) ? ' my-message' : ''
     }
 
     console.log(props.contato);

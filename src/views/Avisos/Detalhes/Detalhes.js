@@ -1,14 +1,9 @@
-"use strict"
 import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Redirect, useParams } from 'react-router';
-import { Link } from 'react-router-dom';
 import BackBtn from '../../../components/BackBtn/BackBtn';
 import usePermissao from '../../../Hooks/usePermissao';
 import api from '../../../Service/api';
-import ClipboardBtn from '../../../components/ClipboardBtn/ClipboardBtn';
-import { numberFormat } from '../../../libs/helpers';
-
 
 import './Detalhes.scss';
 

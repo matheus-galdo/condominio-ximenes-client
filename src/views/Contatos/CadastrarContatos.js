@@ -8,15 +8,15 @@ import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 import DOMPurify from 'dompurify';
 
-import './RegrasNormas.scss';
+import './Contatos.scss';
 
-export default function RegrasNormas(props) {
+export default function CadastrarContatos(props) {
 
     const [content, setContent] = useState(null)
     const [validatorContent, setValidatorContent] = useState({ valid: true, errorMessage: '' })
 
     const [hasLoaded, setLoaded] = useState(false)
-    const { permissao } = usePermissao('regras-normas')
+    const { permissao } = usePermissao('contatos')
     const [hasSubmited, setHasSubmited] = useState(false)
 
     const ckEditorRef = useRef(null)
@@ -26,10 +26,9 @@ export default function RegrasNormas(props) {
         let mounted = true;
 
         if (!hasLoaded) {
-            api().get('/regras-normas').then(response => {
+            api().get('/contatos').then(response => {
                 if (mounted) {
                     setLoaded(true)
-                    console.log(response.data);
                     setContent(DOMPurify.sanitize(response.data.conteudo))
                 }
             })
@@ -47,8 +46,8 @@ export default function RegrasNormas(props) {
 
         if (validatorContent.valid && !hasSubmited) {
             setHasSubmited(true)
-            api().patch(`regras-normas`, {content}).then(response => {
-                history.push('/regras-e-normas')
+            api().patch(`contatos`, {content}).then(response => {
+                history.push('/contatos')
             }).catch(error => {
                 setHasSubmited(false)
             })
@@ -102,7 +101,7 @@ export default function RegrasNormas(props) {
 
         </div>
         <div className='form-controls'>
-            <button className='btn-secondary' onClick={() => history.push('/regras-e-normas')}>Cancelar</button>
+            <button className='btn-secondary' onClick={() => history.push('/contatos')}>Cancelar</button>
             <button className='btn-primary' onClick={submit}>Concluir</button>
         </div>
     </div>

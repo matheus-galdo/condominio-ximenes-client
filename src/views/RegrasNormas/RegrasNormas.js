@@ -12,8 +12,8 @@ import './RegrasNormas.scss';
 export default function RegrasNormas(props) {
 
     const [content, setContent] = useState(null)
-    const [hasLoaded, setLoade] = useState(false)
-    const { permissao } = usePermissao('ocorrencias')
+    const [hasLoaded, setLoaded] = useState(false)
+    const { permissao } = usePermissao('regras-normas')
 
 
     useEffect(() => {
@@ -22,14 +22,14 @@ export default function RegrasNormas(props) {
         if (!hasLoaded) {
             api().get('/regras-normas').then(response => {
                 if (mounted) {
-                    setLoade(true)
+                    setLoaded(true)
                     setContent(response.data.conteudo)
                 }
             })
         }
 
         return () => mounted = false;
-    }, [content])
+    }, [content, hasLoaded])
 
     return <div className='module-wrapper text'>
         <BackBtn />

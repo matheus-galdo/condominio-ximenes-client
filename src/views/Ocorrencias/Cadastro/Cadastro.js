@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Redirect, useHistory, useParams } from 'react-router';
+import { Redirect, useHistory } from 'react-router';
 import BackBtn from '../../../components/BackBtn/BackBtn';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
