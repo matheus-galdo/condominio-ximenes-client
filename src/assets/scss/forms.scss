@@ -21,7 +21,8 @@
     border-radius: 0.2rem;
     padding: 0.6rem 0.6rem;
     background-color: #EBEBEB;
-    outline: none;
+    // outline: none;
+    outline-color: #2180ac8e;
     color: var(--text-dark);
 
 
@@ -30,6 +31,8 @@
         color: var(--text-dark-terciary);
     }
 }
+
+
 
 .app-main-container {
 
@@ -50,14 +53,59 @@
     input,
     select {
         @include input-base-style();
-        height: 2.4rem;
+        height: 3rem;
         width: 100%;
     }
+    
+    .react-select__control{
+        height: 3rem;
+        border: 0;
+        border-radius: 0.2rem;
+        background-color: #EBEBEB;
+        // outline: none;
+        outline-color: #2180ac8e;
+        color: var(--text-dark);
+    
+    
+        &::-webkit-input-placeholder,
+        &::placeholder {
+            color: var(--text-dark-terciary);
+        }
+
+
+        &--is-focused{
+            box-shadow: unset;
+
+            outline: solid !important;
+            outline-width: 2px !important;
+            outline-color: #2180ac8e !important;
+        }
+
+        .react-select__indicators{
+            height: 3rem;
+        }
+        .react-select__value-container{
+            padding: 0 8px;
+            height: 3rem;
+
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        .react-select__input{
+            input{
+                height: 3rem
+            }
+        }
+    }
+
 
     textarea {
         @include input-base-style();
         resize: none;
-        min-height: 8rem;
+        min-height: 10rem;
     }
 
 

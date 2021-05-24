@@ -212,7 +212,7 @@ export default function CadastroLocatario(props) {
 
 
     return (
-        <div className='app-form'>
+        <div className='form-wrapper'>
             <BackBtn />
 
 

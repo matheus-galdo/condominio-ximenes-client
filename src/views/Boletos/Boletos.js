@@ -5,7 +5,9 @@ import BackBtn from '../../components/BackBtn/BackBtn';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
+import { numberFormat } from '../../libs/helpers';
 import api from '../../Service/api';
+import './Boletos.scss'
 
 
 function downloadFile(e, boleto) {
@@ -131,21 +133,13 @@ export default function Boletos(props) {
                     </div>
 
                     <div className='list-item-card-content'>
-                        {permissao.visualizar ?
-                            <Link to={`/boletos/${boleto.id}`}>
-                                <h1>{boleto.nome}</h1>
-                                <p>Apartamento {boleto.apartamento.numero}{boleto.apartamento.bloco}</p>
-                                <p>{boleto.pago ? 'Pago' : 'Em aberto'}</p>
-                                <p>Status: {boleto.deleted_at ? 'Desativado' : 'Ativado'}</p>
-
-                            </Link>
-                            :
-                            <>
-                                <h1>{boleto.nome}</h1>
-                                <p>{boleto.pago ? 'Pago' : 'Em aberto'}</p>
-                                <p>{boleto.codigo_barras}</p>
-                            </>
-                        }
+                        <Link to={`/boletos/${boleto.id}`}>
+                            <h1>{boleto.nome}</h1>
+                            <p>Apartamento {boleto.apartamento.numero}{boleto.apartamento.bloco}</p>
+                            <p>{boleto.pago ? 'Pago' : 'Em aberto'}</p>
+                            {permissao.gerenciar && <p>Status: {boleto.deleted_at ? 'Desativado' : 'Ativado'}</p>}
+                            <p className='valor-boleto'>{numberFormat(boleto.valor, 'real')}</p>
+                        </Link>
                     </div>
 
                     <button onClick={e => downloadFile(e, boleto)} className='btn-primary small-btn'>
@@ -156,7 +150,5 @@ export default function Boletos(props) {
                 </div>
             })}
         </div>
-
-
     </div>
 }

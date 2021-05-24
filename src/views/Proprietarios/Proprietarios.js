@@ -1,35 +1,63 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 
 export default function Proprietarios(props) {
 
-    const [proprietariosOriginal, setProprietariosOriginal] = useState([])
-    const [proprietarios, setProprietarios] = useState([])
+    const [proprietariosOriginal, setProprietariosOriginal] = useState(null)
+    const [proprietarios, setProprietarios] = useState(null)
     const [hasLoaded, setHasLoaded] = useState(false)
-
+    const [hasLoadedPages, setHasLoadedPages] = useState(false)
+    
     const history = useHistory();
     const { permissao } = usePermissao('proprietarios')
+    
+    const [originalData, setOriginalData] = useState(null)
+
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+
+    const [filterOptions, setFilterOptions] = useState([
+        { nome: 'Aguardando aprovação', f:() =>  {setOrderBy('nao_aprovados'); setHasLoaded(false)} },
+        { nome: 'Aprovados', f:() =>  {setOrderBy('aprovados'); setHasLoaded(false)} },
+        { nome: 'Cadastro mais recente', f:() =>  {setOrderBy('data_cadastro_recentes'); setHasLoaded(false)} },
+        { nome: 'Cadastro mais antigo', f:() =>  {setOrderBy('data_cadastro_antigas'); setHasLoaded(false)} },
+        { nome: 'Nome', f: () => {setOrderBy('nome'); setHasLoaded(false)} },
+        { nome: 'Desativados', f: () => {setOrderBy('desativado'); setHasLoaded(false)} },
+        { nome: 'Ativados', f: () => {setOrderBy('ativado'); setHasLoaded(false)} },
+        { nome: 'Todos', f: () => {setOrderBy('todos'); setHasLoaded(false)} },
+    ])
+
+    
+
 
 
     useEffect(() => {
         let mounted = true
         if (!hasLoaded) {
-            api().get('proprietarios').then(response => {
+            api().get(`proprietarios?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
-                    setProprietarios(response.data)
-                    setProprietariosOriginal(response.data)
+                    // setHasLoadedPages(true)
                     setHasLoaded(true)
+                    setProprietarios(response.data.data)
+                    setProprietariosOriginal(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
         return () => mounted = false
-    }, [proprietarios, hasLoaded])
+    }, [hasLoaded, proprietarios, page])
 
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
@@ -88,9 +116,10 @@ export default function Proprietarios(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions}/>
 
 
-        <div className='list-item-container'>
+        {proprietarios && <div className='list-item-container'>
 
             {proprietarios.map((proprietario, id) => {
 
@@ -112,6 +141,9 @@ export default function Proprietarios(props) {
                     {permissao.gerenciar && <OptionsBtn options={options} />}
                 </div>
             })}
-        </div>
+        </div>}
+
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page}/>}
+
     </div>
 }

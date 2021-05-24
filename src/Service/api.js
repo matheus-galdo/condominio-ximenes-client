@@ -10,7 +10,7 @@ const api = (auth = false, responseType = false) => {
  
 
   let headers = {
-    baseURL: (process.env.NODE_ENV === 'development') ? 'http://localhost:8000/api/' : 'a definir',
+    baseURL: (process.env.NODE_ENV === 'development') ? 'http://localhost:8000/api/' : process.env.PROD_API_URL_BACKEND,
   }
   if (responseType) headers.responseType = responseType;
 

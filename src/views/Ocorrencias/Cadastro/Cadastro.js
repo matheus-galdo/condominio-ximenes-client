@@ -12,7 +12,7 @@ export default function Cadastro(props) {
     const [assunto, setAssunto] = useState({ valid: false, errorMessage: "", value: "" })
     const [descricao, setDescricao] = useState({ valid: false, errorMessage: "", value: "" })
     const [stepTrigered, setStepTrigered] = useState(0)
-    const [arquivos, setArquivos] = useState({ valid: false, errorMessage: "", value: {} })
+    const [arquivos, setArquivos] = useState({ valid: true, errorMessage: "", value: {} })
 
     const [apartamento, setApartamento] = useState({ valid: false, errorMessage: "", value: '' })
     const [apartamentos, setApartamentos] = useState([])
@@ -27,7 +27,7 @@ export default function Cadastro(props) {
         let mounted = true
 
         if (!hasRequestedAps) {
-            api().get('apartamentos?proprietarios=true').then(response => {
+            api().get('listar-apartamentos?proprietarios=true').then(response => {
                 if (mounted) {
                     setHasRequestedAps(true)
                     setApartamentos(response.data.map(apartamento => {
@@ -48,6 +48,7 @@ export default function Cadastro(props) {
         let valid = true
         let formData = {}
 
+        console.log(fields);
 
             formData = new FormData();
 

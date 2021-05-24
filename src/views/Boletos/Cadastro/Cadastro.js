@@ -114,7 +114,7 @@ export default function Cadastro(props) {
         {permissao.modulo && (!permissao.acessar || !permissao.criar) && <Redirect to='/nao-permitido' />}
         {permissao.modulo && id && (!permissao.acessar || !permissao.editar) && <Redirect to='/nao-permitido' />}
 
-        <BackBtn to='/boletos' />
+        <BackBtn/>
         <h1>{typeof id === 'undefined' ? 'Cadastrar novo boleto' : 'Editar boleto'}</h1>
         <p>Adicione um arquivo PDF a um apartamento para que seu proprietário tenha acesso.</p>
         <form>

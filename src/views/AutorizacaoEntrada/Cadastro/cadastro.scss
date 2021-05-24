@@ -85,10 +85,14 @@
 }
 
 .form-list-main,
-.form-list-content {
+.form-list-content
+{
     display: flex;
     flex-direction: column;
     flex-grow: 1;
+}
+
+.form-list-content{
     margin-bottom: 5rem;
 }
 

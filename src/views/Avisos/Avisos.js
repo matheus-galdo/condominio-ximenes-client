@@ -67,6 +67,7 @@ export default function Avisos(props) {
         return options
     }
 
+    console.log('aaa');
 
 
     return <div className='module-wrapper'>

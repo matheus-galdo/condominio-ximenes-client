@@ -1,5 +1,9 @@
 .account-container{
 
+    width: 100%;
+    flex-grow: 1;
+    flex-shrink: 0;
+
     .main{
         background-color: var(--color-primary);
         padding: 0 5%;

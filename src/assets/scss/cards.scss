@@ -1,6 +1,7 @@
 .list-item-container {
     padding-top: 2rem;
     width: 100%;
+    flex-grow: 1;
 
 
     .list-item-card {
@@ -11,7 +12,6 @@
         align-items: center;
         padding: 1rem;
         border-radius: 0.5rem;
-
 
         &:hover {
             background-color: #f3f3f3;

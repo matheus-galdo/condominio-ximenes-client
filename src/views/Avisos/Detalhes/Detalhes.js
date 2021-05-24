@@ -49,11 +49,11 @@ export default function Detalhes(props) {
     return <div className='details-wrapper'>
         {permissao.modulo && (!permissao.acessar || !permissao.visualizar) && <Redirect to='/nao-permitido' />}
 
-        <BackBtn to='/avisos' />
+        <BackBtn/>
 
         {hasLoaded && aviso && <>
             <h1>{aviso.titulo} </h1>
-            <p>{aviso.descricao}</p>
+            <p className='descricao-avisos'>{aviso.descricao}</p>
 
             {permissao.gerenciar && <>
                 <h3>Detalhes</h3>

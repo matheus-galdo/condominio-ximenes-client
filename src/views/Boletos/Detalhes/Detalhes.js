@@ -38,7 +38,7 @@ export default function Detalhes(props) {
     return <div className='details-wrapper'>
         {permissao.modulo && (!permissao.acessar || !permissao.visualizar) && <Redirect to='/nao-permitido' />}
 
-        <BackBtn to='/boletos' />
+        <BackBtn/>
 
         {hasLoaded && boleto && <>
 

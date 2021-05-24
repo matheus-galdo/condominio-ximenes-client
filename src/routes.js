@@ -66,6 +66,8 @@ const Avisos_Detalhes = React.lazy(() => import('./views/Avisos/Detalhes/Detalhe
 
 const Contatos = React.lazy(() => import('./views/Contatos/Contatos'));
 const RegrasNormas = React.lazy(() => import('./views/RegrasNormas/RegrasNormas'));
+const RegrasNormas_Cadastro = React.lazy(() => import('./views/RegrasNormas/CadastrarRegrasNormas'));
+
 const HorarioFuncionamento = React.lazy(() => import('./views/Funcionamento/Funcionamento'));
 
 
@@ -148,7 +150,11 @@ export const routes = [
 
 
     {path: '/contatos', exact: true, component: Contatos},
+
     {path: '/regras-e-normas', exact: true, component: RegrasNormas},
+    {path: '/regras-e-normas/cadastro', exact: true, component: RegrasNormas_Cadastro},
+    {path: '/regras-e-normas/cadastro/:id', exact: true, component: RegrasNormas_Cadastro},
+
     {path: '/horario-de-funcionamento', exact: true, component: HorarioFuncionamento},
 ]
 

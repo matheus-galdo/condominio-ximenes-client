@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router';
+import { Redirect, useHistory, useParams } from 'react-router';
+import BackBtn from '../../../components/BackBtn/BackBtn';
+import usePermissao from '../../../Hooks/usePermissao';
 import FormInput from '../../../libs/FormInput/FormInput';
 import api from '../../../Service/api';
 
@@ -12,6 +14,7 @@ export default function Cadastro(props) {
     const [hasLoaded, setHasLoaded] = useState(false)
     const [hasSubmited, setHasSubmited] = useState(false)
 
+    const { permissao } = usePermissao('avisos')
 
     const history = useHistory();
     let { id } = useParams();
@@ -60,6 +63,13 @@ export default function Cadastro(props) {
     }
 
     return <div className='form-wrapper'>
+        {permissao.modulo && (!permissao.acessar || !permissao.criar) && <Redirect to='/nao-permitido' />}
+        {permissao.modulo && id && (!permissao.acessar || !permissao.editar) && <Redirect to='/nao-permitido' />}
+
+        <BackBtn/>
+        <h1>{typeof id === 'undefined' ? 'Cadastrar novo aviso' : 'Editar aviso'}</h1>
+        <p>Adicione um aviso para os proprietários.</p>
+
         <form>
             <FormInput
                 type='text'
