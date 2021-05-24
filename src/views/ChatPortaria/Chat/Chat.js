@@ -17,7 +17,7 @@ import FormInput from '../../../libs/FormInput/FormInput';
 
 function downloadFile(e, mensagem) {
     e.preventDefault()
-    api(false, 'blob').get(`download-file?file=${mensagem.id}&module=mensagem-sindica`).then(response => {
+    api(false, 'blob').get(`download-file?file=${mensagem.id}&module=mensagem-portaria`).then(response => {
         console.log(response);
 
         let filename = 'file.txt'
@@ -53,7 +53,7 @@ export default function Chat(props) {
         let mounted = true
         setMensagens([])
         if (props.contato && props.contato.chat) {
-            api().get(`chat-sindica/${props.contato.chat.id}`).then(response => {
+            api().get(`chat-portaria/${props.contato.chat.id}`).then(response => {
                 if (mounted) {
                     setMensagens(response.data)
                 }
@@ -103,7 +103,7 @@ export default function Chat(props) {
         }
 
         setMensagen("")
-        api().post(`chat-sindica-mensagens`, data).then(response => {
+        api().post(`chat-portaria-mensagens`, data).then(response => {
             setMensagens(response.data)
         });
     }
@@ -133,13 +133,14 @@ export default function Chat(props) {
         setMensagen("")
         setArquivos({ valid: false, errorMessage: "", value: {} })
 
-        api().post(`chat-sindica-mensagens`, formData).then(response => {
+        api().post(`chat-portaria-mensagens`, formData).then(response => {
             setMensagens(response.data)
             hideAnexos(e)
-            setStepTrigered(stepTrigered + 1)
+            setStepTrigered(0)
         });
     }
 
+    console.log(arquivos);
     function getMessageCardClass(mensagem) {
         return (mensagem.mensagem_admin && props.user.typeName.is_admin) || (!mensagem.mensagem_admin && !props.user.typeName.is_admin) ? ' my-message' : ''
     }

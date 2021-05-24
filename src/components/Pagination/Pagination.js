@@ -42,7 +42,7 @@ export default function Pagination(props) {
         }
     }, [props, items])
 
-    function nextPage() {
+    function nextPage() {console.log('ahoy');
         let pageIndex = props.page + 1
         if (pageIndex <= items.last_page) {
             props.setPage(pageIndex)

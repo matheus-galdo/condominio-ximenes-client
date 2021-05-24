@@ -1,9 +1,9 @@
-.search-bar-container{
+.search-bar-container {
     border: 1.5px solid #a9a3a3;
     border-radius: 2rem;
     height: 2.2rem;
-
-
+    overflow: hidden;
+    padding: 0;
 
     flex-grow: 1;
     margin-right: 1rem;
@@ -13,23 +13,42 @@
     justify-content: center;
     align-items: center;
 
-    .search-bar{
+    .search-bar {
         height: 2rem;
         padding-left: 1.4rem;
         background-color: transparent;
+        outline: unset;
     }
 
-    .search-icon{
-        height: 1.2rem;
-        width: 1.2rem;
-        margin-right: 1rem;
-        fill: #a9a3a3;
+    .search-btn {
+        border: 0;
+        height: 100%;
+        background-color: unset;
 
+        &.enabled{
+            cursor: pointer;
+            .search-icon {
+                fill: var(--color-primary);
+            }
+
+            &:hover{
+                .search-icon {
+                    fill: var(--color-primary-dark);
+                }
+            }
+        }
+
+        .search-icon {
+            height: 1.2rem;
+            width: 1.2rem;
+            margin-right: 1rem;
+            fill: #a9a3a3;
+        }
     }
 }
 
 @media screen and(max-width:640px) {
-    .search-bar-container{
+    .search-bar-container {
         height: 2rem;
     }
 }

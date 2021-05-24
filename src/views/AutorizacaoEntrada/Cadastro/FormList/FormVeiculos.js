@@ -14,7 +14,6 @@ export default function FormList(props) {
     const [cor, setCor] = useState({ valid: false, errorMessage: "", value: "" })
 
     useEffect(() => {
-        console.log('props trigger',props.stepTrigered);
 
     }, [props, props.stepTrigered])
 

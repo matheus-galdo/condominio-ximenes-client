@@ -26,7 +26,7 @@ const Ocorrencias_Followup = React.lazy(() => import('./views/Ocorrencias/Follow
 const FaleComSindica = React.lazy(() => import('./views/ChatSindica/ChatSindica'));
 const FaleComSindica_Chat = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
 
-const FaleComPortaria = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
+const FaleComPortaria = React.lazy(() => import('./views/ChatPortaria/ChatPortaria'));
 const FaleComPortaria_Chat = React.lazy(() => import('./views/Ocorrencias/Ocorrencias'));
 
 const Documentos = React.lazy(() => import('./views/Documentos/Documentos'));

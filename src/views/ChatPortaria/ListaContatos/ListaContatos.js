@@ -19,7 +19,7 @@ export default function ListaContatos(props) {
     const [contatos, setContatos] = useState(props.contatos || [])
     // const [contatosOriginal, setContatosOriginal] = useState(props.contatos || [])
     const history = useHistory();
-    const { permissao } = usePermissao('chat-sindica')
+    const { permissao } = usePermissao('chat-portaria')
 
     const [hasLoaded, setHasLoaded] = useState(false)
 

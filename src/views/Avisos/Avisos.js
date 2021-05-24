@@ -2,7 +2,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
@@ -10,45 +12,63 @@ import './Avisos.scss';
 
 export default function Avisos(props) {
 
-    const [avisosOriginal, setAvisosOriginal] = useState([])
     const [avisos, setAvisos] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
     const history = useHistory();
     const { permissao } = usePermissao('avisos')
 
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Título', f: () => { setOrderBy('titulo'); setHasLoaded(false) } },
+        { nome: 'Expira', f: () => { setOrderBy('expira'); setHasLoaded(false) } },
+        { nome: 'Não expira', f: () => { setOrderBy('nao_expira'); setHasLoaded(false) } },
+        { nome: 'Data de expiração', f: () => { setOrderBy('data_expiracao'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
+
+
+    useEffect(() => {
+        document.title = "Avisos"
+    }, []);
+
     useEffect(() => {
         let mounted = true
         if (!hasLoaded) {
-            api().get('avisos').then(response => {
+            api().get(`avisos?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
                     setHasLoaded(true)
-                    setAvisos(response.data)
-                    setAvisosOriginal(response.data)
+                    setAvisos(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
 
         return () => mounted = false
-    }, [hasLoaded])
+    }, [hasLoaded, filterOptions, page])
 
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
-
-        if (value === '') {
-            setAvisos(avisosOriginal);
-            return
-        }
-
-        let filtered = avisos.filter(aviso =>
-            (aviso.titulo.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setAvisos(filtered);
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
     }
 
-    
+    function filter(e, value) {
+        api().get(`avisos?page=${page}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setAvisos(response.data.data)
+            setOriginalData(response.data)
+        })
+    }
+
+
     function getItenOptions(item, moduloName, reload) {
 
         let options = []
@@ -83,6 +103,7 @@ export default function Avisos(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
         <div className='list-item-container'>
 
@@ -90,11 +111,20 @@ export default function Avisos(props) {
 
                 let options = getItenOptions(aviso, 'avisos', setHasLoaded)
 
+                let expirado = false
+                let dateExpiration = aviso.data_expiracao;
+
+                if (dateExpiration) {
+                    expirado = moment() >= moment(dateExpiration)
+                }
+
                 return <div key={id} className='list-item-card'>
                     <div className='list-item-card-content'>
                         <Link to={'/avisos/' + aviso.id}>
                             <h1>{aviso.titulo}</h1>
-                            <p>Data: {moment(aviso.created_at).format('L')}</p>
+                            <p>Cadastrado em: {moment(aviso.created_at).format('L')}</p>
+                            <p>{expirado ? 'Expirou em' : 'Expira em'}: {dateExpiration ? moment(dateExpiration).format('L') : ' Não expira'}
+                            </p>
                             {permissao.gerenciar && <p>Status: {aviso.deleted_at ? 'Desativado' : 'Ativado'}</p>}
                         </Link>
                     </div>
@@ -104,6 +134,8 @@ export default function Avisos(props) {
             })}
 
         </div>
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
+
 
     </div>
 }

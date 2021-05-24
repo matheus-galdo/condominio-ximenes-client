@@ -2,7 +2,9 @@ import moment from "moment";
 import { useContext, useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import BackBtn from "../../components/BackBtn/BackBtn";
+import FilterBy from "../../components/FilterBy/FilterBy";
 import OptionsBtn from "../../components/OptionsBtn/OptionsBtn";
+import Pagination from "../../components/Pagination/Pagination";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import { UserContext } from "../../Context/UserProvider";
 import api from "../../Service/api";
@@ -14,23 +16,49 @@ export default function AutorizacaoEntrada(props) {
 
     const [locatarios, setLocatarios] = useState([])
     const [locatariosOriginal, setLocatariosOriginal] = useState([])
+
+    const [hasLoaded, setHasLoaded] = useState(false)
     const history = useHistory();
 
     const { user } = useContext(UserContext)
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Nome locatário', f: () => { setOrderBy('nome'); setHasLoaded(false) } },
+        { nome: 'Número do ap', f: () => { setOrderBy('numero_ap'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
+
     useEffect(() => {
-        api().get('locatarios').then(response => {
-            setLocatarios(response.data)
-            setLocatariosOriginal(response.data)
-        })
-    }, [])
+        let mounted = true
+        if (!hasLoaded) {
+            api().get(`locatarios?page=${page}&filter=${orderBy}`).then(response => {
+                if (mounted) {
+                    setHasLoaded(true)
+                    setLocatarios(response.data.data)
+                    setLocatariosOriginal(response.data)
+                }
+            })
+        }
 
+        return () => mounted = false
+    }, [hasLoaded])
 
     useEffect(() => {
+        document.title = "Autorização de entrada"
+    }, []);
 
-    }, [locatariosOriginal])
-
-
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
@@ -73,6 +101,7 @@ export default function AutorizacaoEntrada(props) {
                     + Adicionar
                 </Link>
             </div>
+            <FilterBy options={filterOptions} />
 
             <div className="list-item-container">
                 {locatarios.map((locatario, id) => {
@@ -95,6 +124,7 @@ export default function AutorizacaoEntrada(props) {
                     </div>
                 })}
             </div>
+            {(locatariosOriginal || hasLoaded) && <Pagination itens={locatariosOriginal} setPage={changePage} page={page} />}
 
         </div>
     )

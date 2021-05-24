@@ -47,48 +47,54 @@ export default function CadastroLocatario(props) {
     const [submiting, setSubmiting] = useState(false)
 
     useEffect(() => {
+        let mounted = true
         if (id && !hasLoaded) {
             api().get(`locatarios/${id}`).then(response => {
-                let locatario = response.data
+                if (mounted) {
 
-                setNomeLocatario({ valid: true, errorMessage: "", value: locatario.nome })
-                setCpf({ valid: true, errorMessage: "", value: locatario.cpf })
-                setDataChegada({ valid: true, errorMessage: "", value: moment(locatario.data_chegada).format('YYYY-MM-DD') })
-                setDataSaida({ valid: true, errorMessage: "", value: moment(locatario.data_saida).format('YYYY-MM-DD') })
-                setCelular({ valid: true, errorMessage: "", value: locatario.celular })
-                setEmail({ valid: true, errorMessage: "", value: locatario.email })
-                setObservacoes({ valid: true, errorMessage: "", value: locatario.observacoes || '' })
-                setApartamento({ valid: true, errorMessage: "", value: locatario.apartamento_id || '' })
+                    setHasLoaded(true)
+                    let locatario = response.data
+
+                    setNomeLocatario({ valid: true, errorMessage: "", value: locatario.nome })
+                    setCpf({ valid: true, errorMessage: "", value: locatario.cpf })
+                    setDataChegada({ valid: true, errorMessage: "", value: moment(locatario.data_chegada).format('YYYY-MM-DD') })
+                    setDataSaida({ valid: true, errorMessage: "", value: moment(locatario.data_saida).format('YYYY-MM-DD') })
+                    setCelular({ valid: true, errorMessage: "", value: locatario.celular })
+                    setEmail({ valid: true, errorMessage: "", value: locatario.email })
+                    setObservacoes({ valid: true, errorMessage: "", value: locatario.observacoes || '' })
+                    setApartamento({ valid: true, errorMessage: "", value: locatario.apartamento_id || '' })
 
 
-                setNaoPossuiVeiculo({ valid: true, errorMessage: "", value: locatario.possui_veiculos === 0 })
-                let veiculosItens = locatario.veiculos.map(veiculo => {
-                    return {
-                        placa: { valid: true, errorMessage: "", value: veiculo.placa || '' },
-                        modelo: { valid: true, errorMessage: "", value: veiculo.modelo || '' },
-                        cor: { valid: true, errorMessage: "", value: veiculo.cor || '' },
-                        id: { valid: true, errorMessage: "", value: veiculo.id },
-                    }
-                })
-                setVeiculos(veiculosItens)
+                    setNaoPossuiVeiculo({ valid: true, errorMessage: "", value: locatario.possui_veiculos === 0 })
+                    let veiculosItens = locatario.veiculos.map(veiculo => {
+                        return {
+                            placa: { valid: true, errorMessage: "", value: veiculo.placa || '' },
+                            modelo: { valid: true, errorMessage: "", value: veiculo.modelo || '' },
+                            cor: { valid: true, errorMessage: "", value: veiculo.cor || '' },
+                            id: { valid: true, errorMessage: "", value: veiculo.id },
+                        }
+                    })
+                    setVeiculos(veiculosItens)
 
-                setNaoPossuiConvidados({ valid: true, errorMessage: "", value: locatario.possui_convidados === 0 })
-                let convidadosItens = locatario.convidados.map(convidado => {
-                    return {
-                        nomeConvidado: { valid: true, errorMessage: "", value: convidado.nome || '' },
-                        cpf: { valid: true, errorMessage: "", value: convidado.cpf || '' },
-                        celular: { valid: true, errorMessage: "", value: convidado.celular || '' },
-                        email: { valid: true, errorMessage: "", value: convidado.email || '' },
-                        observacoes: { valid: true, errorMessage: "", value: convidado.observacoes || '' },
-                        id: { valid: true, errorMessage: "", value: convidado.id },
-                    }
-                })
-                setConvidados(convidadosItens)
-                setStepTrigered(stepTrigered + 1)
-                setHasLoaded(true)
+                    setNaoPossuiConvidados({ valid: true, errorMessage: "", value: locatario.possui_convidados === 0 })
+                    let convidadosItens = locatario.convidados.map(convidado => {
+                        return {
+                            nomeConvidado: { valid: true, errorMessage: "", value: convidado.nome || '' },
+                            cpf: { valid: true, errorMessage: "", value: convidado.cpf || '' },
+                            celular: { valid: true, errorMessage: "", value: convidado.celular || '' },
+                            crianca: { valid: true, errorMessage: "", value: convidado.crianca || false },
+                            observacoes: { valid: true, errorMessage: "", value: convidado.observacoes || '' },
+                            id: { valid: true, errorMessage: "", value: convidado.id },
+                        }
+                    })
+                    setConvidados(convidadosItens)
+                    setStepTrigered(stepTrigered + 1)
+                }
+
             })
         }
 
+        return () => mounted = false
     }, [id, stepTrigered, hasLoaded])
 
     useEffect(() => {
@@ -142,7 +148,7 @@ export default function CadastroLocatario(props) {
         if (valid && !submiting) {
             if (!naoPossuiVeiculo.value) {
                 formData.veiculos = veiculos.map(veiculo => {
-                    console.log('aa', veiculo);
+
                     return {
                         cor: veiculo.cor.value,
                         modelo: veiculo.modelo.value,
@@ -167,8 +173,6 @@ export default function CadastroLocatario(props) {
                 formData.convidados = []
             }
 
-            console.log(valid, formData, veiculos, convidados);
-
 
             let url = (id) ? `locatarios/${id}` : 'locatarios'
             let httpVerb = (id) ? `put` : 'post'
@@ -177,7 +181,7 @@ export default function CadastroLocatario(props) {
             setSubmiting(true)
             api()[httpVerb](url, formData).then(
                 response => history.push('/autorizacao-de-entrada')
-            ).catch(error => 
+            ).catch(error =>
                 setSubmiting(false)
             )
         }
@@ -197,7 +201,6 @@ export default function CadastroLocatario(props) {
         setStepTrigered(stepTrigered + 1)
 
         let fields = { nomeLocatario, cpf, dataChegada, dataSaida, celular, email, observacoes, apartamento }
-        console.log(fields);
         let valid = true
         Object.keys(fields).forEach(fieldName => {
             if (!fields[fieldName].valid) valid = false
@@ -294,6 +297,7 @@ export default function CadastroLocatario(props) {
                         stepTrigered={stepTrigered}
                         setStepTrigered={setStepTrigered}
                         submit={submit}
+                        submiting={submiting}
                     />
                 </>
             }

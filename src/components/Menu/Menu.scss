@@ -175,6 +175,17 @@
 
         .menu-close-button{
             display: block;
+
+            border: 0;
+            background-color: unset;
+            color: #fff;
+            
+            svg{
+                stroke: #fff;
+                fill: #fff;
+                width: 1.2rem;
+                height: 1.2rem;
+            }
         }
 
         .user-resume{

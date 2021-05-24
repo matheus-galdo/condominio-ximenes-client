@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
-// import Pagination from '../../components/Pagination/Pagination';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
@@ -16,22 +17,45 @@ export default function Apartamentos(props) {
     const history = useHistory();
     const { permissao } = usePermissao('apartamentos')
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f:() =>  {setOrderBy('data_cadastro_recentes'); setHasLoaded(false)} },
+        { nome: 'Cadastro mais antigo', f:() =>  {setOrderBy('data_cadastro_antigas'); setHasLoaded(false)} },
+        { nome: 'Número', f: () => {setOrderBy('numero'); setHasLoaded(false)} },
+        { nome: 'Desativados', f: () => {setOrderBy('desativado'); setHasLoaded(false)} },
+        { nome: 'Ativados', f: () => {setOrderBy('ativado'); setHasLoaded(false)} },
+        { nome: 'Todos', f: () => {setOrderBy('todos'); setHasLoaded(false)} },
+    ])
+
+    useEffect(() => {
+        document.title = "Apartamentos"
+    }, []);
 
     useEffect(() => {
         let mounted = true
-        if (!hasLoaded && apartamentos.length === 0) {
-            api().get('apartamentos?proprietarios=true').then(response => {
+        if (!hasLoaded) {
+            api().get(`apartamentos?proprietarios=true&page=${page}&filter=${orderBy}`).then(response => {
+
                 if (mounted) {
                     setHasLoaded(true)
-                    setApartamentos(response.data)
-                    setApartamentosOriginal(response.data)
+                    setApartamentos(response.data.data)
+                    setApartamentosOriginal(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
 
         return () => mounted = false
-    }, [apartamentos, hasLoaded])
+    }, [apartamentos, hasLoaded, page, orderBy])
 
+
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
     function filter(e) {
         let value = e.target.value.toLowerCase()
@@ -90,6 +114,7 @@ export default function Apartamentos(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions}/>
 
 
         <div className='list-item-container'>
@@ -112,5 +137,7 @@ export default function Apartamentos(props) {
             })}
         </div>
 
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page}/>}
+        
     </div>
 }

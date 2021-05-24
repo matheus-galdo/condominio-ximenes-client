@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import FormInput from "../../../../libs/FormInput/FormInput";
+import ReactLoading from 'react-loading';
 
 export default function FormList(props) {
 
@@ -18,6 +19,11 @@ export default function FormList(props) {
 
     let convidadosAdultos = props.itens.filter(convidado => !convidado.crianca.value)
     let convidadosCriancas = props.itens.filter(convidado => convidado.crianca.value)
+
+    console.log(props.itens);
+
+    // let convidadosAdultos = []
+    // let convidadosCriancas =[]
 
     useEffect(() => {
     }, [props, props.stepTrigered, crianca])
@@ -187,7 +193,7 @@ export default function FormList(props) {
 
                 <div className='form-controls'>
                     <button className='btn-secondary' onClick={props.previousStep}>Anterior</button>
-                    <button className='btn-primary' onClick={submit}>Concluir</button>
+                    <button className='btn-primary' onClick={submit}>{props.submiting? <ReactLoading height={'1.6rem'} width={'1.6rem'} type={'spin'}/>: 'Concluir'}</button>
                 </div>
             </>}
 
@@ -195,7 +201,7 @@ export default function FormList(props) {
 
                 <FormInput name='Nome do Locatário' setValue={setNomeConvidado} defaultValue={nomeConvidado} trigger={stepTrigered} />
                 <FormInput
-                    name='Convidado menor de 14 anos'
+                    name='Convidado menor de 7 anos'
                     type='checkbox'
                     optional
                     showOptional
@@ -203,7 +209,7 @@ export default function FormList(props) {
                     setValue={setCrianca}
                     defaultValue={crianca}
                 />
-                <FormInput setValue={setCpf} name='CPF' placeholder='Ex: 000.000.000-00' validation={'required|cpf'} defaultValue={cpf} trigger={stepTrigered} />
+                <FormInput setValue={setCpf} name='CPF' placeholder='Ex: 000.000.000-00' validation={'cpf'} defaultValue={cpf} trigger={stepTrigered} />
                 <FormInput name='Celular' optional showOptional type='tel' setValue={setCelular} placeholder='Ex: 00 00000-0000' validation={'telefone'} defaultValue={celular} trigger={stepTrigered} />
                 <FormInput name='Observações' type='textarea' setValue={setObservacoes} optional showOptional defaultValue={observacoes} trigger={stepTrigered} />
 

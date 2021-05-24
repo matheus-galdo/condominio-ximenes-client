@@ -20,17 +20,30 @@ export default function LocatarioDetails(props) {
 
 
     return (
-        <div className='locatario-wrapper'>
+        <div className='details-wrapper'>
             <BackBtn />
 
             {hasLoaded && <>
                 
                 <h1>{locatario.nome}</h1>
-                <p>
-                    {moment(locatario.data_chegada).format('D/MMM')} à {moment(locatario.data_saida).format('D/MMM')}
-                </p>
 
-                <p>Convidados</p>
+                <p><span className='bold'>Período da locação:</span> {moment(locatario.data_chegada).format('D/MMM')} à {moment(locatario.data_saida).format('D/MMM')}</p>
+                <p><span className='bold'>CPF:</span> {locatario.cpf}</p>
+                <p><span className='bold'>E-mail:</span> {locatario.email}</p>
+                <p><span className='bold'>Celular:</span> {locatario.celular}</p>
+
+                <h3>Apartamento</h3>
+                <div className='details-list-item'>
+                    <div className='details-item-content'>
+                        <span className='details-item-number'>1</span>
+                        <p>
+                            Apartamento {locatario.apartamento.numero} {locatario.apartamento.bloco}<br />
+                            <span>{locatario.apartamento.andar}° andar</span>
+                        </p>
+                    </div>
+                </div>
+
+                <h3>Convidados</h3>
                 {locatario.convidados.map((item, key) => <div key={key} className='details-list-item'>
                     <div className='details-item-content'>
                         <span className='details-item-number'>{key + 1}</span>
@@ -41,7 +54,7 @@ export default function LocatarioDetails(props) {
                     </div>
                 </div>)}
 
-                <p>Veículos</p>
+                <h3>Veículos</h3>
                 {locatario.veiculos.map((item, key) => <div key={key} className='details-list-item'>
                     <div className='details-item-content'>
                         <span className='details-item-number'>{key + 1}</span>
