@@ -36,7 +36,6 @@ export default function Cadastro(props) {
     
 
     function submit(e) {
-        console.log(stepTrigered);
         e.preventDefault()
         setStepTrigered(stepTrigered + 1)
 

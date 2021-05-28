@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
@@ -38,16 +40,29 @@ export default function Documentos(props) {
     const history = useHistory();
     const { permissao } = usePermissao('documentos')
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Extensão', f: () => { setOrderBy('extensao'); setHasLoaded(false) } },
+        { nome: 'Nome', f: () => { setOrderBy('nome'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Todas', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
 
     useEffect(() => {
         let mounted = true;
 
-        if (!hasLoaded && documentosOriginal.length === 0) {
-            api().get('documentos').then(response => {
+        if (!hasLoaded) {
+            api().get(`documentos?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
-                    setDocumentosOriginal(response.data)
-                    setDocumentos(response.data)
                     setHasLoaded(true)
+                    setDocumentos(response.data.data)
+                    setDocumentosOriginal(response.data)
                 }
             })
         }
@@ -55,23 +70,27 @@ export default function Documentos(props) {
         return () => {
             mounted = false
         }
-    }, [documentos, hasLoaded, documentosOriginal])
+    }, [documentos, hasLoaded, documentosOriginal, page, orderBy])
 
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
+    useEffect(() => {
+        document.title = "Documentos"
+    }, []);
 
-        if (value === '') {
-            setDocumentos(documentosOriginal);
-            return
-        }
 
-        let filtered = documentosOriginal.filter(documento =>
-            (documento.nome.toLowerCase().indexOf(value) >= 0) ||
-            (documento.nome_original.toLowerCase().indexOf(value) >= 0)
-        )
+    function filter(e, value) {
+        setPage(1)
+        api().get(`documentos?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setDocumentosOriginal(response.data)
+            setDocumentos(response.data.data)
+        })
+    }
 
-        setDocumentos(filtered);
+
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
     }
 
 
@@ -109,6 +128,7 @@ export default function Documentos(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
 
         <div className='list-item-container'>
@@ -149,6 +169,7 @@ export default function Documentos(props) {
             })}
         </div>
 
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
 
     </div>
 }

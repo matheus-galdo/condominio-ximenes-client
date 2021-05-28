@@ -11,9 +11,9 @@ export default function Cadastro(props) {
     const [email, setEmail] = useState({ valid: false, errorMessage: "", value: "" })
     const [password, setPassword] = useState({ valid: false, errorMessage: "", value: "" })
     const [passwordConfirmation, setPasswordConfirmation] = useState({ valid: false, errorMessage: "", value: "" })
-    const [userType, setUserType] = useState({ valid: false, errorMessage: "", value: 1 })
-    
-    
+    const [userType, setUserType] = useState({ valid: false, errorMessage: "", value: "" })
+
+
     const [userTypes, setUserTypes] = useState([])
     const [stepTrigered, setStepTrigered] = useState(0)
     const [hasLoaded, setHasLoaded] = useState(false)
@@ -29,10 +29,10 @@ export default function Cadastro(props) {
         if (userTypes.length === 0) {
             api().get(`listar-permissoes-admin`).then(response => {
                 if (mounted) {
-                    setUserTypes(response.data)                    
+                    setUserTypes(response.data)
                 }
             })
-        }        return () => mounted = false
+        } return () => mounted = false
     }, [userTypes])
 
     useEffect(() => {
@@ -44,7 +44,7 @@ export default function Cadastro(props) {
                     setEmail({ valid: false, errorMessage: "", value: response.data.email })
                     setPassword({ valid: false, errorMessage: "", value: "" })
                     setUserType({ valid: false, errorMessage: "", value: response.data.type })
-                    
+
                     setStepTrigered(stepTrigered + 1)
                     setHasLoaded(true)
                 }
@@ -54,11 +54,6 @@ export default function Cadastro(props) {
         return () => mounted = false
     }, [stepTrigered, hasLoaded, id])
 
-
-    function debugAction(value) {
-        console.log('alo', value);
-        setUserType(value)
-    }
 
     function submit(e) {
         e.preventDefault()
@@ -125,7 +120,7 @@ export default function Cadastro(props) {
                 <FormInput
                     type='password'
                     name='Senha'
-                    validation='required'
+                    validation='required|min:8'
                     defaultValue={password}
                     setValue={setPassword}
                     trigger={stepTrigered}
@@ -134,7 +129,7 @@ export default function Cadastro(props) {
                 <FormInput
                     type='password'
                     name='Confirmar senha'
-                    validation={`required|confirmed:${password.value}`}
+                    validation={`required|confirmed:${password.value}|min:8`}
                     defaultValue={passwordConfirmation}
                     setValue={setPasswordConfirmation}
                     trigger={stepTrigered}
@@ -142,15 +137,15 @@ export default function Cadastro(props) {
 
             </div>}
 
-                <FormInput
-                    type='select'
-                    name='Tipo de permissão'
-                    options={userTypes}
-                    validation='required'
-                    defaultValue={userType}
-                    setValue={debugAction}
-                    trigger={stepTrigered}
-                />
+            <FormInput
+                type='reactSelect'
+                name='Tipo de permissão'
+                selectConfig={{ options: userTypes, valueKey: 'id', labelKey: 'nome' }}
+                validation='required'
+                defaultValue={userType}
+                setValue={setUserType}
+                trigger={stepTrigered}
+            />
 
             <div className='form-controls'>
                 <button className='btn-secondary' onClick={() => history.push('/usuarios')}>Cancelar</button>

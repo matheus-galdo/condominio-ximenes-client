@@ -1,49 +1,68 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 
 export default function Usuarios(props) {
 
-    const [usuariosOriginal, setUsuariosOriginal] = useState([])
     const [usuarios, setUsuarios] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
     const { permissao } = usePermissao('usuarios')
 
+    const [originalData, setOriginalData] = useState(null)
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Nome', f: () => { setOrderBy('name'); setHasLoaded(false) } },
+        { nome: 'Tipo de usuário', f: () => { setOrderBy('user_type'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
 
     useEffect(() => {
+        let mounted = true
         if (!hasLoaded) {
-            api().get('usuarios').then(response => {
-                setUsuarios(response.data)
-                setUsuariosOriginal(response.data)
-                setHasLoaded(true)
+            api().get(`usuarios?page=${page}&filter=${orderBy}`).then(response => {
+                if (mounted) {
+                    setHasLoaded(true)
+                    setUsuarios(response.data.data)
+                    setOriginalData(response.data)
+                }
             })
         }
+
+        return () => mounted = false
     }, [usuarios, hasLoaded])
 
+    useEffect(() => {
+        document.title = "Usuários"
+    }, []);
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
-
-        if (value === '') {
-            setUsuarios(usuariosOriginal);
-            return
-        }
-
-        let filtered = usuariosOriginal.filter(usuario =>
-            (usuario.name.toLowerCase().indexOf(value) >= 0) ||
-            (usuario.email.toLowerCase().indexOf(value) >= 0) ||
-            (usuario.type_name.nome.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setUsuarios(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`usuarios?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setUsuarios(response.data.data)
+            setOriginalData(response.data)
+        })
     }
 
+
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
     function getItenOptions(item, moduloName, reload) {
 
@@ -79,6 +98,8 @@ export default function Usuarios(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
+
 
 
         <div className='list-item-container'>
@@ -101,6 +122,7 @@ export default function Usuarios(props) {
             })}
         </div>
 
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
 
     </div>
 }

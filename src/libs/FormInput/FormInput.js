@@ -25,7 +25,7 @@ export default function FormInput(props) {
 
     const [parsedName] = useState(parseInputName(props.name))
     const [value, setValue] = useState({ value: props.defaultValue.value || '', valid: true, errorMessage: '' })
-    
+
     const onDrop = useCallback((acceptedFiles, fileRejections) => {
         validateDropzoneField({ acceptedFiles, fileRejections })
     }, [])
@@ -115,13 +115,13 @@ export default function FormInput(props) {
 
 
         if ((typeof files !== 'object' || !('acceptedFiles' in files))) {
-            handler = { value: files, valid: true, errorMessage: ''}
+            handler = { value: files, valid: true, errorMessage: '' }
 
             if (getValidationRules().indexOf('required') >= 0) {
                 handler.valid = false
                 handler.errorMessage = 'Este campo é obrigatório'
             }
-            
+
             props.setValue(handler)
             setValue(handler)
             return
@@ -135,9 +135,14 @@ export default function FormInput(props) {
         }
 
 
-        files.acceptedFiles = (files.acceptedFiles.map(file => Object.assign(file, {
-            preview: URL.createObjectURL(file)
-        })));
+        files.acceptedFiles = (files.acceptedFiles.map(file => {
+            
+            let url = URL.createObjectURL(file)
+            return Object.assign(file, {
+                preview: url
+            })
+
+        }));
 
 
 
@@ -326,7 +331,7 @@ export default function FormInput(props) {
 
     return (
         <>
-            <div data-input-type={props.type || 'text'} className={'form-group ' + (props.className || '') + (props.col? `col-${props.col}`: '') }>
+            <div data-input-type={props.type || 'text'} className={'form-group ' + (props.className || '') + (props.col ? `col-${props.col}` : '')}>
                 <ReactTooltip />
 
                 {props.type === 'checkbox' ? <>

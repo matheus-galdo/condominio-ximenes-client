@@ -22,7 +22,7 @@ export default function Menu(props) {
 
     useEffect(() => {
 
-    }, [user])
+    }, [user, UserContext])
 
     useEffect(() => {
         setShow(props.showMenu)
@@ -48,7 +48,6 @@ export default function Menu(props) {
             let mountedMenu = []
             menuItens.forEach(itemMenu => {
                 let permissao = user.permissoes.find(permissao => permissao.modulo === itemMenu.moduleName)
-                // console.log(permissao);
                 if (permissao.acessar) mountedMenu.push(itemMenu)
             })
             setMenu(mountedMenu)

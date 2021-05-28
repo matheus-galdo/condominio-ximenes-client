@@ -31,6 +31,10 @@ export default function HorarioFuncionamento(props) {
         return () => mounted = false;
     }, [content, hasLoaded])
 
+    useEffect(() => {
+        document.title = "Horário de funcionamento"
+    }, []);
+
     return <div className='module-wrapper text'>
         <BackBtn />
         <h1>Horário de Funcionamento</h1>

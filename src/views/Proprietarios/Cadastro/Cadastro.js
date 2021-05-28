@@ -86,11 +86,6 @@ export default function Cadastro(props) {
     }, [stepTrigered, hasLoaded, id])
 
 
-    function debugAction(value) {
-        console.log('alo', value);
-        setUserType(value)
-    }
-
     function submit(e) {
         e.preventDefault()
         setStepTrigered(stepTrigered + 1)
@@ -159,7 +154,7 @@ export default function Cadastro(props) {
                 <FormInput
                     type='password'
                     name='Senha'
-                    validation='required'
+                    validation='required|min:8'
                     defaultValue={password}
                     setValue={setPassword}
                     trigger={stepTrigered}
@@ -168,7 +163,7 @@ export default function Cadastro(props) {
                 <FormInput
                     type='password'
                     name='Confirmar senha'
-                    validation={`required|confirmed:${password.value}`}
+                    validation={`required|confirmed:${password.value}|min:8`}
                     defaultValue={passwordConfirmation}
                     setValue={setPasswordConfirmation}
                     trigger={stepTrigered}
@@ -182,7 +177,7 @@ export default function Cadastro(props) {
                 selectConfig={{ options: userTypes, valueKey: 'id', labelKey: 'nome' }}
                 validation='required'
                 defaultValue={userType}
-                setValue={debugAction}
+                setValue={setUserType}
                 trigger={stepTrigered}
             />
 

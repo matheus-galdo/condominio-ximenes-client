@@ -14,10 +14,10 @@ export default function Detalhes(props) {
 
 
     useEffect(() => {
-        if (!hasLoaded && !usuario.permissoes_with_modulo) {
+        if (!hasLoaded) {
             api().get(`usuarios/${id}`).then(response => {
-                setUsuario(response.data)
                 setHasLoaded(true)
+                setUsuario(response.data)
             })
         }
     }, [hasLoaded, id, usuario])
@@ -30,15 +30,10 @@ export default function Detalhes(props) {
 
         {hasLoaded && <>
 
-            <h1>{usuario.name}</h1>
-            {/* <h2>{usuario.typeName}</h2> */}
-            
+            <h1>{usuario.name}</h1>            
             <h3>Detalhes</h3>
             <p><span className='bold'>E-mail: </span> {usuario.email}</p>
             <p><span className='bold'>Tipo de permissão: </span> {usuario.typeName}</p>
-
-            {/* <h3>Permissões</h3>
-            <p><span className='bold'>E-mail: </span> {usuario.email}</p> */}
 
         </>}
 

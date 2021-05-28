@@ -8,6 +8,8 @@ import api from '../../Service/api';
 import './Documentos.scss';
 import './Contas.scss';
 import moment from 'moment';
+import Pagination from '../../components/Pagination/Pagination';
+import FilterBy from '../../components/FilterBy/FilterBy';
 
 
 function downloadFile(e, documento) {
@@ -32,12 +34,25 @@ function downloadFile(e, documento) {
 
 export default function Contas(props) {
 
-    const [contasOriginal, setContasOriginal] = useState([])
     const [contas, setContas] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
     const { permissao } = usePermissao('prestacao-contas')
+
+    const [originalData, setOriginalData] = useState(null)
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Nome arquivo', f: () => { setOrderBy('nome'); setHasLoaded(false) } },
+        { nome: 'Periodo', f: () => { setOrderBy('periodo'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
 
 
     useEffect(() => {
@@ -47,37 +62,31 @@ export default function Contas(props) {
 
     useEffect(() => {
         let mounted = true;
-
-        if (!hasLoaded && contasOriginal.length === 0) {
-            api().get('prestacao-contas').then(response => {
+        if (!hasLoaded) {
+            api().get(`prestacao-contas?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
-                    setContasOriginal(response.data)
-                    setContas(response.data)
                     setHasLoaded(true)
+                    setContas(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
-
-        return () => {
-            mounted = false
-        }
-    }, [contas, hasLoaded, contasOriginal])
+        return () => mounted = false
+    }, [contas, hasLoaded, originalData])
 
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
-        if (value === '') {
-            setContas(contasOriginal);
-            return
-        }
-
-        let filtered = contasOriginal.filter(documento =>
-            (documento.nome.toLowerCase().indexOf(value) >= 0) ||
-            (documento.nome_original.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setContas(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`prestacao-contas?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setContas(response.data.data)
+            setOriginalData(response.data)
+        })
     }
 
 
@@ -115,6 +124,7 @@ export default function Contas(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
 
         <div className='list-item-container'>
@@ -155,6 +165,6 @@ export default function Contas(props) {
             })}
         </div>
 
-
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
     </div>
 }

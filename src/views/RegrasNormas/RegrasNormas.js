@@ -30,6 +30,10 @@ export default function RegrasNormas(props) {
 
         return () => mounted = false;
     }, [content, hasLoaded])
+    
+    useEffect(() => {
+        document.title = "Regras e normas"
+    }, []);
 
     return <div className='module-wrapper text'>
         <BackBtn />

@@ -1,24 +1,27 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
 import api from '../../../Service/api';
 import moment from 'moment';
-import imgMessage from '../../.././/assets/img/mail-notification-2557119-2139454.png'
-import './Chat.scss'
-import ReactTooltip from 'react-tooltip';
+import imgMessage from '../../../assets/img/mail-notification-2557119-2139454.png'
 
 import { IoMdSend } from 'react-icons/io';
 import { AiOutlineDownload } from 'react-icons/ai';
 import { FiPaperclip } from "react-icons/fi";
 import { GrClose } from "react-icons/gr";
+import { BsArrowLeft } from "react-icons/bs";
+import { HiMenuAlt1 } from "react-icons/hi";
 
 import { bytesToSize, dateFormater } from '../../../assets/Helpers/helpers';
-import FormInput from '../../../libs/FormInput/FormInput';
+import mimeTypes from '../../../assets/Helpers/mimeTypes.json'
 
+import FormInput from '../../../libs/FormInput/FormInput';
+import useOuterClick from '../../../Hooks/useOuterClick';
+
+import './Chat.scss';
 
 function downloadFile(e, mensagem) {
     e.preventDefault()
     api(false, 'blob').get(`download-file?file=${mensagem.id}&module=mensagem-portaria`).then(response => {
-        console.log(response);
 
         let filename = 'file.txt'
         try {
@@ -28,6 +31,7 @@ function downloadFile(e, mensagem) {
         }
 
         let url = URL.createObjectURL(new Blob([response.data]));
+
         let a = document.createElement('a');
         a.href = url;
         a.download = filename;
@@ -39,6 +43,9 @@ function downloadFile(e, mensagem) {
 export default function Chat(props) {
 
     const [mensagens, setMensagens] = useState([])
+    const [hasLoaded, setHasLoaded] = useState(false)
+
+    const messagesRef = useRef(null)
 
     const [mensagem, setMensagen] = useState("")
 
@@ -46,8 +53,11 @@ export default function Chat(props) {
     const [arquivos, setArquivos] = useState({ valid: false, errorMessage: "", value: {} })
     const [stepTrigered, setStepTrigered] = useState(0)
 
-
-
+    const dropzoneRef = useOuterClick(ev => {
+        if (anexosModal) {
+            setAnexosModal(false)
+        }
+    });
 
     useEffect(() => {
         let mounted = true
@@ -55,13 +65,41 @@ export default function Chat(props) {
         if (props.contato && props.contato.chat) {
             api().get(`chat-portaria/${props.contato.chat.id}`).then(response => {
                 if (mounted) {
+                    setHasLoaded(true)
                     setMensagens(response.data)
+                    messagesRef.current.scrollTop = messagesRef.current.scrollHeight
                 }
             });
         }
 
         return () => mounted = false
     }, [props.contato])
+
+
+    useEffect(() => {
+        let mounted = true
+        let chatUpdateInterval = null
+
+        if (props.contato && props.contato.chat && hasLoaded) {
+            chatUpdateInterval = setInterval(() => {
+                let lastMessageId = mensagens[mensagens.length - 1].id
+
+                api().get(`chat-portaria-novas-mensagens/${lastMessageId}`).then(response => {
+                    if (mounted) {
+                        setMensagens([...mensagens, ...response.data])
+                        messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+                    }
+                }).catch(error => {
+                    clearInterval(chatUpdateInterval)
+                });
+            }, 20000);
+        }
+
+        return () => {
+            mounted = false
+            clearInterval(chatUpdateInterval)
+        }
+    }, [props.contato, hasLoaded, mensagens])
 
     function getAuthorName(mensagem) {
         if (mensagem.mensagem_admin) {
@@ -102,9 +140,16 @@ export default function Chat(props) {
             data.proprietario = props.contato.proprietario_id
         }
 
+        if (mensagens.length > 0) {
+            data.last_message_id = mensagens[mensagens.length - 1].id
+        }
+
         setMensagen("")
         api().post(`chat-portaria-mensagens`, data).then(response => {
-            setMensagens(response.data)
+            setMensagens([...mensagens, ...response.data])
+            props.updateContato(response.data)
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+
         });
     }
 
@@ -112,10 +157,7 @@ export default function Chat(props) {
         e.preventDefault()
 
         let formData = new FormData();
-
         formData.append(`message`, "")
-
-        console.log(arquivos);
 
         if (!arquivos.valid) {
             setArquivos({ valid: false, errorMessage: "Adicione um arquivo para enviar", value: {} })
@@ -130,17 +172,22 @@ export default function Chat(props) {
             formData.append(`proprietario`, props.contato.proprietario_id)
         }
 
+        if (mensagens.length > 0) {
+            formData.append('last_message_id', mensagens[mensagens.length - 1].id)
+        }
+
         setMensagen("")
         setArquivos({ valid: false, errorMessage: "", value: {} })
 
         api().post(`chat-portaria-mensagens`, formData).then(response => {
-            setMensagens(response.data)
+            setMensagens([...mensagens, ...response.data])
             hideAnexos(e)
-            setStepTrigered(0)
+            setStepTrigered(stepTrigered + 2)
+            messagesRef.current.scrollTop = messagesRef.current.scrollHeight
+
         });
     }
 
-    console.log(arquivos);
     function getMessageCardClass(mensagem) {
         return (mensagem.mensagem_admin && props.user.typeName.is_admin) || (!mensagem.mensagem_admin && !props.user.typeName.is_admin) ? ' my-message' : ''
     }
@@ -165,11 +212,10 @@ export default function Chat(props) {
         return content
     }
 
-    console.log(props.contato);
     return <section className='chat-messages-container'>
 
         <div className={'modal-chat' + (anexosModal ? ' active' : '')}>
-            <div className='modal-container'>
+            <div className='modal-container' ref={dropzoneRef}>
                 <div className='button-container'>
                     <button className='close-btn' onClick={hideAnexos}><GrClose /></button>
                 </div>
@@ -178,6 +224,7 @@ export default function Chat(props) {
                         type='dropzone'
                         name='Anexos'
                         validation='required'
+                        accept={`video/*, audio/*, image/*, ${mimeTypes.pdf}, ${mimeTypes.xls}, ${mimeTypes.xlsx}, ${mimeTypes.doc}, ${mimeTypes.docx}`}
                         defaultValue={arquivos}
                         setValue={setArquivos}
                         trigger={stepTrigered}
@@ -189,32 +236,41 @@ export default function Chat(props) {
             </div>
         </div>
 
-        <div className='chat-contato-header'>{props.contato && props.contato.name}</div>
+        <div className='chat-contato-header'>
+            {props.contato && <>
+                <button className='contatos-btn' onClick={() => props.setShowContatos(true)}>
+                    <BsArrowLeft />
+                </button>
+                {props.contato.name}
+                <span></span>
+                {props.permissao.gerenciar && <button className='details-btn' onClick={() => props.setShowDetails(true)}>
+                    <HiMenuAlt1 />
+                </button>}
+
+            </>}
+
+        </div>
         {!props.contato &&
             <div className='no-message'>
-                <img src={imgMessage} />
+                <h1>Fale com a portaria</h1>
+                <img src={imgMessage} alt="" />
                 <p>Clique em um contato para enviar uma mensagem</p>
             </div>
         }
 
-        <div className={'message-container'}>
-            {props.contato && mensagens.length > 0 &&
-                <>
-                    {mensagens.map((mensagem, key) => <>
-                        <div key={key} className={'message-card-wrapper' + getMessageCardClass(mensagem)}>
+        <div className={'message-container'} ref={messagesRef}>
+            {props.contato && mensagens.length > 0 && mensagens.map((mensagem, key) =>
+                <div key={key} className={'message-card-wrapper' + getMessageCardClass(mensagem)}>
 
-                            <div className={'message-card' + getMessageCardClass(mensagem)}>
-                                {renderMessageContent(mensagem)}
-                                {/* {mensagem.mensagem} */}
+                    <div className={'message-card' + getMessageCardClass(mensagem)}>
+                        {renderMessageContent(mensagem)}
 
-                                <span className='author-message'>
-                                    {getAuthorName(mensagem)} - <span title={moment(mensagem.created_at).format('LLL')}>{dateFormater(mensagem.created_at)}</span>
-                                </span>
-                            </div>
-                        </div>
-                    </>)}
-                </>
-            }
+                        <span className='author-message'>
+                            {getAuthorName(mensagem)} - <span title={moment(mensagem.created_at).format('LLL')}>{dateFormater(mensagem.created_at)}</span>
+                        </span>
+                    </div>
+                </div>
+            )}
         </div>
 
 

@@ -52,7 +52,7 @@ export default function Avisos(props) {
         }
 
         return () => mounted = false
-    }, [hasLoaded, filterOptions, page])
+    }, [hasLoaded, filterOptions, page, orderBy])
 
 
     function changePage(value) {
@@ -61,7 +61,8 @@ export default function Avisos(props) {
     }
 
     function filter(e, value) {
-        api().get(`avisos?page=${page}&filter=${orderBy}&search=${value}`).then(response => {
+        setPage(1)
+        api().get(`avisos?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
             setHasLoaded(true)
             setAvisos(response.data.data)
             setOriginalData(response.data)

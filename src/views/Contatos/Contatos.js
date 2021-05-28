@@ -31,6 +31,10 @@ export default function Contatos(props) {
         return () => mounted = false;
     }, [content, hasLoaded])
 
+    useEffect(() => {
+        document.title = "Contatos"
+    }, []);
+
     return <div className='module-wrapper text'>
         <BackBtn />
         <h1>Contatos</h1>

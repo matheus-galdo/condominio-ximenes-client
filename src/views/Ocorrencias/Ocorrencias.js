@@ -2,7 +2,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
@@ -17,28 +19,47 @@ export default function Ocorrencias(props) {
     const [hasRequestedEventos, setHasRequestedEventos] = useState(false)
 
 
-    const [ocorrenciasOriginal, setOcorrenciasOriginal] = useState([])
     const [ocorrencias, setOcorrencias] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const { permissao } = usePermissao('ocorrencias')
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Assunto', f: () => { setOrderBy('assunto'); setHasLoaded(false) } },
+        { nome: 'Ativadas', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todas', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+        { nome: 'Concluídas', f: () => { setOrderBy('concluidas'); setHasLoaded(false) } },
+        { nome: 'Canceladas', f: () => { setOrderBy('canceladas'); setHasLoaded(false) } },
+        { nome: 'Desativadas', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+    ])
+
 
     useEffect(() => {
         let mounted = true
         if (!hasLoaded) {
-            api().get('ocorrencias').then(response => {
+            api().get(`ocorrencias?page=${page}&filter=${orderBy}`).then(response => {
+
                 if (mounted) {
                     setHasLoaded(true)
-                    setOcorrencias(response.data)
-                    setOcorrenciasOriginal(response.data)
+                    setOcorrencias(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
 
         return () => mounted = false
-    }, [hasLoaded])
+    }, [hasLoaded, page, orderBy])
 
+
+    useEffect(() => {
+        document.title = "Ocorrências"
+    }, []);
 
     useEffect(() => {
         let mounted = true
@@ -58,26 +79,21 @@ export default function Ocorrencias(props) {
     }, [hasRequestedEventos])
 
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
-        if (value === '') {
-            setOcorrencias(ocorrenciasOriginal);
-            return
-        }
-
-        let filtered = ocorrencias.filter(ocorrencia =>
-            (ocorrencia.assunto.toLowerCase().indexOf(value) >= 0) ||
-            (ocorrencia.user.name.toLowerCase().indexOf(value) >= 0) ||
-            (moment(ocorrencia.created_at).format('L').indexOf(value) >= 0)
-        )
-
-        setOcorrencias(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`ocorrencias?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setOcorrencias(response.data.data)
+            setOriginalData(response.data)
+        })
     }
 
     function getItenOptions(item, moduloName, reload) {
-
-        console.log(item);
 
         let options = []
         let lastFollowup = item.followup[item.followup.length - 1].evento
@@ -114,6 +130,7 @@ export default function Ocorrencias(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
         {hasRequestedEventos && hasLoaded && eventoReaberta &&
             <div className='list-item-container'>
@@ -137,6 +154,7 @@ export default function Ocorrencias(props) {
             </div>
 
         }
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
     </div>
 }
 

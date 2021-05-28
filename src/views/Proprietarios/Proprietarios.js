@@ -10,31 +10,26 @@ import api from '../../Service/api';
 
 export default function Proprietarios(props) {
 
-    const [proprietariosOriginal, setProprietariosOriginal] = useState(null)
     const [proprietarios, setProprietarios] = useState(null)
     const [hasLoaded, setHasLoaded] = useState(false)
-    
+
     const history = useHistory();
     const { permissao } = usePermissao('proprietarios')
-    
-    const [originalData, setOriginalData] = useState(null)
 
+    const [originalData, setOriginalData] = useState(null)
     const [page, setPage] = useState(1)
     const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
 
     const [filterOptions] = useState([
-        { nome: 'Aguardando aprovação', f:() =>  {setOrderBy('nao_aprovados'); setHasLoaded(false)} },
-        { nome: 'Aprovados', f:() =>  {setOrderBy('aprovados'); setHasLoaded(false)} },
-        { nome: 'Cadastro mais recente', f:() =>  {setOrderBy('data_cadastro_recentes'); setHasLoaded(false)} },
-        { nome: 'Cadastro mais antigo', f:() =>  {setOrderBy('data_cadastro_antigas'); setHasLoaded(false)} },
-        { nome: 'Nome', f: () => {setOrderBy('nome'); setHasLoaded(false)} },
-        { nome: 'Desativados', f: () => {setOrderBy('desativado'); setHasLoaded(false)} },
-        { nome: 'Ativados', f: () => {setOrderBy('ativado'); setHasLoaded(false)} },
-        { nome: 'Todos', f: () => {setOrderBy('todos'); setHasLoaded(false)} },
+        { nome: 'Aguardando aprovação', f: () => { setOrderBy('nao_aprovados'); setHasLoaded(false) } },
+        { nome: 'Aprovados', f: () => { setOrderBy('aprovados'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Nome', f: () => { setOrderBy('name'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
     ])
-
-    
-
 
 
     useEffect(() => {
@@ -42,10 +37,8 @@ export default function Proprietarios(props) {
         if (!hasLoaded) {
             api().get(`proprietarios?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
-                    // setHasLoadedPages(true)
                     setHasLoaded(true)
                     setProprietarios(response.data.data)
-                    setProprietariosOriginal(response.data.data)
                     setOriginalData(response.data)
                 }
             })
@@ -53,26 +46,22 @@ export default function Proprietarios(props) {
         return () => mounted = false
     }, [hasLoaded, proprietarios, page, orderBy])
 
+    useEffect(() => {
+        document.title = "Proprietários"
+    }, []);
+
     function changePage(value) {
         setHasLoaded(false)
         setPage(value)
     }
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
-
-        if (value === '') {
-            setProprietarios(proprietariosOriginal);
-            return
-        }
-
-        let filtered = proprietariosOriginal.filter(usuario =>
-            (usuario.name.toLowerCase().indexOf(value) >= 0) ||
-            (usuario.email.toLowerCase().indexOf(value) >= 0) ||
-            (usuario.type_name.nome.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setProprietarios(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`proprietarios?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setProprietarios(response.data.data)
+            setOriginalData(response.data)
+        })
     }
 
 
@@ -81,8 +70,8 @@ export default function Proprietarios(props) {
         let options = []
 
         if (!Boolean(item.aprovado)) {
-            if (permissao.editar) options.push({ name: 'Editar e aprovar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })            
-        }else{
+            if (permissao.editar) options.push({ name: 'Editar e aprovar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })
+        } else {
             if (permissao.editar) options.push({ name: 'Editar', f: () => history.push(`/${moduloName}/cadastro/${item.id}`) })
         }
 
@@ -115,7 +104,7 @@ export default function Proprietarios(props) {
                 + Adicionar
             </Link>}
         </div>
-        <FilterBy options={filterOptions}/>
+        <FilterBy options={filterOptions} />
 
 
         {proprietarios && <div className='list-item-container'>
@@ -129,9 +118,9 @@ export default function Proprietarios(props) {
                         <Link to={`/proprietarios/${proprietario.id}`}>
                             <h1>{proprietario.name}</h1>
                             <p>Tipo: {proprietario.type_name.nome}</p>
-                            <p>Status: {Boolean(proprietario.aprovado) ? 
-                                proprietario.deleted_at ? 'Desativado' : 'Ativado' 
-                            :
+                            <p>Status: {Boolean(proprietario.aprovado) ?
+                                proprietario.deleted_at ? 'Desativado' : 'Ativado'
+                                :
                                 'Aguardando aprovação'
                             }</p>
                         </Link>
@@ -142,7 +131,7 @@ export default function Proprietarios(props) {
             })}
         </div>}
 
-        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page}/>}
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
 
     </div>
 }

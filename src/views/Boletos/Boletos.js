@@ -2,7 +2,9 @@ import moment from 'moment';
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import { numberFormat } from '../../libs/helpers';
@@ -33,49 +35,61 @@ function downloadFile(e, boleto) {
 
 export default function Boletos(props) {
 
-    const [boletosOriginal, setBoletosOriginal] = useState([])
     const [boletos, setBoletos] = useState([])
     const [hasLoaded, setHasLoaded] = useState(false)
 
     const history = useHistory();
     const { permissao } = usePermissao('boletos')
 
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+    const [originalData, setOriginalData] = useState(null)
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Despesa', f: () => { setOrderBy('nome'); setHasLoaded(false) } },
+        { nome: 'Valor', f: () => { setOrderBy('valor'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
 
     useEffect(() => {
         let mounted = true;
 
         if (!hasLoaded) {
-            api().get('boletos').then(response => {
+            api().get(`boletos?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
                     setHasLoaded(true)
-                    setBoletosOriginal(response.data)
-                    setBoletos(response.data)
+                    setOriginalData(response.data)
+                    setBoletos(response.data.data)
                 }
             })
         }
 
-        return () => {
-            mounted = false
-        }
-    }, [boletos, hasLoaded, boletosOriginal])
+        return () => mounted = false
+    }, [boletos, hasLoaded, originalData, page, orderBy])
+
+    useEffect(() => {
+        document.title = "Boletos"
+    }, []);
 
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
 
-        if (value === '') {
-            setBoletos(boletosOriginal);
-            return
-        }
-
-        let filtered = boletosOriginal.filter(boleto =>
-            (boleto.nome.toLowerCase().indexOf(value) >= 0) ||
-            (boleto.nome_original.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setBoletos(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`boletos?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setOriginalData(response.data)
+            setBoletos(response.data.data)
+        })
     }
 
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
     function getItenOptions(item, moduloName, reload) {
 
@@ -117,6 +131,7 @@ export default function Boletos(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
 
         <div className='list-item-container'>
@@ -150,5 +165,7 @@ export default function Boletos(props) {
                 </div>
             })}
         </div>
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
+
     </div>
 }

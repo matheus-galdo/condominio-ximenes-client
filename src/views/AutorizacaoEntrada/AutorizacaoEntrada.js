@@ -60,21 +60,13 @@ export default function AutorizacaoEntrada(props) {
         setPage(value)
     }
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
-
-        if (value === '') {
-            setLocatarios(locatariosOriginal);
-            return
-        }
-
-        let filtered = locatarios.filter(locatario =>
-            (locatario.nome.toLowerCase().indexOf(value) >= 0) ||
-            (locatario.user.name.toLowerCase().indexOf(value) >= 0) ||
-            (moment(locatario.data_chegada).format('L').indexOf(value) >= 0)
-        )
-
-        setLocatarios(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`locatarios?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setLocatarios(response.data.data)
+            setLocatariosOriginal(response.data)
+        })
     }
 
     function deleted(item) {

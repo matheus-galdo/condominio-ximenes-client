@@ -1,48 +1,65 @@
 import { useEffect, useState } from 'react';
 import { Link, Redirect, useHistory } from 'react-router-dom';
 import BackBtn from '../../components/BackBtn/BackBtn';
+import FilterBy from '../../components/FilterBy/FilterBy';
 import OptionsBtn from '../../components/OptionsBtn/OptionsBtn';
+import Pagination from '../../components/Pagination/Pagination';
 import SearchBar from '../../components/SearchBar/SearchBar';
 import usePermissao from '../../Hooks/usePermissao';
 import api from '../../Service/api';
 
 export default function Permissoes(props) {
 
-    const [permissoessOriginal, setPermissoesOriginal] = useState([])
     const [permissoes, setPermissoes] = useState([])
-    const [hasFeteched, setHasFeteched] = useState(false)
+    const [hasLoaded, setHasLoaded] = useState(false)
     const history = useHistory();
 
     const { permissao } = usePermissao('permissoes')
 
+    const [originalData, setOriginalData] = useState(null)
+    const [page, setPage] = useState(1)
+    const [orderBy, setOrderBy] = useState('data_cadastro_recentes')
+
+    const [filterOptions] = useState([
+        { nome: 'Cadastro mais recente', f: () => { setOrderBy('data_cadastro_recentes'); setHasLoaded(false) } },
+        { nome: 'Cadastro mais antigo', f: () => { setOrderBy('data_cadastro_antigas'); setHasLoaded(false) } },
+        { nome: 'Nome', f: () => { setOrderBy('nome'); setHasLoaded(false) } },
+        { nome: 'Permissão de admin', f: () => { setOrderBy('is_admin'); setHasLoaded(false) } },
+        { nome: 'Desativados', f: () => { setOrderBy('desativado'); setHasLoaded(false) } },
+        { nome: 'Ativados', f: () => { setOrderBy('ativado'); setHasLoaded(false) } },
+        { nome: 'Todos', f: () => { setOrderBy('todos'); setHasLoaded(false) } },
+    ])
+
     useEffect(() => {
         let mounted = true
-        if (!hasFeteched) {
-            api().get('permissoes?page=1').then(response => {
+        if (!hasLoaded) {
+            api().get(`permissoes?page=${page}&filter=${orderBy}`).then(response => {
                 if (mounted) {
-                    setPermissoes(response.data)
-                    setPermissoesOriginal(response.data)
-                    setHasFeteched(true)
+                    setHasLoaded(true)
+                    setPermissoes(response.data.data)
+                    setOriginalData(response.data)
                 }
             })
         }
         return () => mounted = false
-    }, [hasFeteched])
+    }, [hasLoaded])
 
+    useEffect(() => {
+        document.title = "Permissões"
+    }, []);
 
-    function filter(e) {
-        let value = e.target.value.toLowerCase()
+    function changePage(value) {
+        setHasLoaded(false)
+        setPage(value)
+    }
 
-        if (value === '') {
-            setPermissoes(permissoessOriginal);
-            return
-        }
-
-        let filtered = permissoessOriginal.data.filter(permissao =>
-            (permissao.titulo.toLowerCase().indexOf(value) >= 0)
-        )
-
-        setPermissoes(filtered);
+    function filter(e, value) {
+        setPage(1)
+        api().get(`permissoes?page=${1}&filter=${orderBy}&search=${value}`).then(response => {
+            setHasLoaded(true)
+            setPermissoes(response.data.data)
+            setOriginalData(response.data)
+        })
     }
 
 
@@ -78,17 +95,19 @@ export default function Permissoes(props) {
                 + Adicionar
             </Link>}
         </div>
+        <FilterBy options={filterOptions} />
 
 
         <div className='list-item-container'>
-            {permissoes.data && permissoes.data.map((permissaoItem, id) => {
+            {permissoes && permissoes.map((permissaoItem, id) => {
 
-                let options = getItenOptions(permissaoItem, 'permissoes', setHasFeteched)
+                let options = getItenOptions(permissaoItem, 'permissoes', setHasLoaded)
 
                 return <div key={id} className='list-item-card'>
                     <div className='list-item-card-content'>
                         <Link to={'/permissoes/' + permissaoItem.id}>
                             <h1>{permissaoItem.nome}</h1>
+                            <p>Permissão de admin: {permissaoItem.is_admin ? 'Sim' : 'Não'}</p>
                             <p>Status: {permissaoItem.deleted_at ? 'Desativado' : 'Ativado'}</p>
                         </Link>
                     </div>
@@ -98,6 +117,7 @@ export default function Permissoes(props) {
             })}
         </div>
 
+        {(originalData || hasLoaded) && <Pagination itens={originalData} setPage={changePage} page={page} />}
 
     </div>
 }

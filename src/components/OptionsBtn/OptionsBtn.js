@@ -19,8 +19,8 @@ export default function OptionsBtn(props) {
         setHide(!hide)
     }
 
-    function triggerOption(option) {
-        option.f()
+    function triggerOption(e, option) {
+        option.f(e)
         setHide(true)
     }
 
@@ -35,7 +35,7 @@ export default function OptionsBtn(props) {
 
 
             <ul className={'options-list' + (hide? ' hide': '')}>
-                {props.options.map((option, id) => <li key={id} onClick={() => triggerOption(option)}>{option.name}</li>)}
+                {props.options.map((option, id) => <li key={id} onClick={event => triggerOption(event, option)}>{option.name}</li>)}
             </ul>
         </div>
     )
